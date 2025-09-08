@@ -11,6 +11,9 @@ importers:
       '@better-scroll/core':
         specifier: ^2.5.1
         version: 2.5.1
+      '@better-scroll/observe-dom':
+        specifier: ^2.5.1
+        version: 2.5.1
       '@better-scroll/slide':
         specifier: ^2.5.1
         version: 2.5.1
@@ -26,6 +29,9 @@ importers:
       vue-router:
         specifier: ^4.0.3
         version: 4.5.1(vue@3.5.21)
+      vue3-lazy:
+        specifier: 1.0.0-alpha.1
+        version: 1.0.0-alpha.1(vue@3.5.21)
       vuex:
         specifier: ^4.0.0
         version: 4.1.0(vue@3.5.21)
@@ -641,6 +647,9 @@ packages:
 
   '@better-scroll/core@2.5.1':
     resolution: {integrity: sha512-koKOuYA55dQ04FJRIVUpMGDr1hbCfWmfX0MGp1hKagkQSWSRpwblqACiwtggVauoj9aaJRJZ9hDsTM4weaavlg==}
+
+  '@better-scroll/observe-dom@2.5.1':
+    resolution: {integrity: sha512-TCMGFLRfpXBPIwtUV/efliUmfmrhSNI7NXdSyjdWjsLOS7dh3eFkmcom5ERVWMaXVELSmujGXLqobT+dT0C/jg==}
 
   '@better-scroll/shared-utils@2.5.1':
     resolution: {integrity: sha512-AplkfSjXVYP9LZiD6JsKgmgQJ/mG4uuLmBuwLz8W5OsYc7AYTfN8kw6GqZ5OwCGoXkVhBGyd8NeC4xwYItp0aw==}
@@ -4267,6 +4276,12 @@ packages:
   vue-template-es2015-compiler@1.9.1:
     resolution: {integrity: sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==}
 
+  vue3-lazy@1.0.0-alpha.1:
+    resolution: {integrity: sha512-dpjpKK4DC5q+wZVtS/VY3X6pYBJHxRmYanr20s39RB6o6fvbneQ/DNuz37bipYfEdrEvbSZ95Y2SCexuznQNrQ==}
+    engines: {node: '>=6.0.0'}
+    peerDependencies:
+      vue: ^3.0.0-alpha.9
+
   vue@3.5.21:
     resolution: {integrity: sha512-xxf9rum9KtOdwdRkiApWL+9hZEMWE90FHh8yS1+KJAiWYh+iGWV1FquPjoO9VUHQ+VIhsCXNNyZ5Sf4++RVZBA==}
     peerDependencies:
@@ -5185,6 +5200,10 @@ snapshots:
   '@better-scroll/core@2.5.1':
     dependencies:
       '@better-scroll/shared-utils': 2.5.1
+
+  '@better-scroll/observe-dom@2.5.1':
+    dependencies:
+      '@better-scroll/core': 2.5.1
 
   '@better-scroll/shared-utils@2.5.1': {}
 
@@ -9203,6 +9222,10 @@ snapshots:
       loader-utils: 1.4.2
 
   vue-template-es2015-compiler@1.9.1: {}
+
+  vue3-lazy@1.0.0-alpha.1(vue@3.5.21):
+    dependencies:
+      vue: 3.5.21
 
   vue@3.5.21:
     dependencies:
