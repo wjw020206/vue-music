@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend" v-loading:[loadingText]="loading">
+  <div class="recommend" v-loading="loading">
     <Scroll class="recommend-content">
       <div>
         <div class="slider-wrapper">
@@ -41,8 +41,6 @@ const sliders = ref([])
 
 /** 歌单列表数据 */
 const albums = ref([])
-
-const loadingText = ref('正在载入')
 
 const loading = computed(() => {
   return !sliders.value.length && !albums.value.length
