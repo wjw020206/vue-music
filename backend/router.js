@@ -4,7 +4,7 @@
  */
 const axios = require('axios')
 const { pinyin } = require('pinyin')
-const Base64 = require('js-base64').Base64
+const { Base64 } = require('js-base64')
 // 获取签名方法
 const getSecuritySign = require('./sign')
 
@@ -399,8 +399,9 @@ function registerSongsUrl(app) {
       const sign = getSecuritySign(JSON.stringify(data))
       const url = `https://u.y.qq.com/cgi-bin/musics.fcg?_=${getRandomVal()}&sign=${sign}`
 
+
       // 发送 post 请求
-      return post(url, data).then((response) => {
+      return post(url, JSON.stringify(data)).then((response) => {
         const data = response.data
         if (data.code === ERR_OK) {
           const midInfo = data.req_0.data.midurlinfo
@@ -637,7 +638,7 @@ function registerHotKeys(app) {
 // 注册搜索查询接口
 function registerSearch(app) {
   app.get('/api/search', (req, res) => {
-    const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+    const url = 'https://shc.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
 
     const { query, page, showSinger } = req.query
 

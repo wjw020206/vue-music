@@ -23,6 +23,12 @@ defineExpose({
 })
 </script>
 
+<script>
+export default {
+  name: 'Loading',
+}
+</script>
+
 <style lang="scss" scoped>
 .loading {
   position: absolute;
