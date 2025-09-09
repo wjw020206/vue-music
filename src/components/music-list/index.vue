@@ -5,6 +5,12 @@
     </div>
     <h1 class="title">{{ title }}</h1>
     <div class="bg-image" :style="bgImageStyle" ref="bgImageRef">
+      <div class="play-btn-wrapper" :style="playBtnStyle">
+        <div v-show="songs.length > 0" class="play-btn" @click="random">
+          <i class="icon-play"></i>
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
       <div class="filter" :style="filterStyle"></div>
     </div>
     <Scroll
@@ -16,7 +22,7 @@
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
-        <SongList :songs="songs" />
+        <SongList :songs="songs" @select="selectItem" />
       </div>
     </Scroll>
   </div>
@@ -27,6 +33,9 @@ import Scroll from '@/components/base/scroll/index.vue'
 import SongList from '@/components/base/song-list/index.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 const RESERVED_HEIGHT = 40
 
@@ -57,6 +66,19 @@ const maxTranslateY = ref(0)
 
 function onScroll({ y }) {
   scrollY.value = -y
+}
+
+/** 选择一首歌曲播放 */
+function selectItem({ index }) {
+  store.dispatch('selectPlay', {
+    list: props.songs,
+    index,
+  })
+}
+
+/** 随机播放 */
+function random() {
+  store.dispatch('randomPlay', props.songs)
 }
 
 const imageHeight = ref(0)
@@ -118,6 +140,18 @@ const noResult = computed(() => {
   return !props.loading && !props.songs.length
 })
 
+const playBtnStyle = computed(() => {
+  let display = ''
+
+  if (scrollY.value >= maxTranslateY.value) {
+    display = 'none'
+  }
+
+  return {
+    display,
+  }
+})
+
 const bgImageRef = ref(null)
 
 onMounted(() => {
@@ -161,6 +195,35 @@ onMounted(() => {
     width: 100%;
     transform-origin: top;
     background-size: cover;
+
+    .play-btn-wrapper {
+      position: absolute;
+      bottom: 20px;
+      z-index: 10;
+      width: 100%;
+      .play-btn {
+        box-sizing: border-box;
+        width: 135px;
+        padding: 7px 0;
+        margin: 0 auto;
+        text-align: center;
+        border: 1px solid $color-theme;
+        color: $color-theme;
+        border-radius: 100px;
+        font-size: 0;
+      }
+      .icon-play {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 6px;
+        font-size: $font-size-medium-x;
+      }
+      .text {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: $font-size-small;
+      }
+    }
 
     .filter {
       position: absolute;
