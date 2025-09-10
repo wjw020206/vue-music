@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { addClass } from '@/assets/js/dom'
+import { addClass, removeClass } from '@/assets/js/dom'
 
 const relativeClass = 'g-relative'
 
@@ -58,6 +58,6 @@ export default function createLoadingLikeDirective(component) {
   function remove(el) {
     const name = component.name
     el.removeChild(el[name].instance.$el)
-    addClass(el, relativeClass)
+    removeClass(el, relativeClass)
   }
 }

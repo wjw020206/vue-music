@@ -23,6 +23,10 @@ const mutations = {
   setFullScreen(state, fullScreen) {
     state.fullScreen = fullScreen
   },
+  /** 设置收藏歌曲列表 */
+  setFavoriteList(state, list) {
+    state.favoriteList = list
+  },
 }
 
 export default mutations
