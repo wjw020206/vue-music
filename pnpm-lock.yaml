@@ -26,6 +26,9 @@ importers:
       good-storage:
         specifier: ^1.1.1
         version: 1.1.1
+      lyric-parser:
+        specifier: ^1.0.1
+        version: 1.0.1
       vue:
         specifier: ^3.2.13
         version: 3.5.21
@@ -2983,6 +2986,9 @@ packages:
   lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
+
+  lyric-parser@1.0.1:
+    resolution: {integrity: sha512-klGkA3gsKMyHENefKj1OnbscWRAxvxNsYNuxgmSIQg6KqVx/HnTrfcD/gNP74XBcu7HSh+kGhCjetPlH91OtFA==}
 
   magic-string@0.30.18:
     resolution: {integrity: sha512-yi8swmWbO17qHhwIBNeeZxTceJMeBvWJaId6dyvTSOwTipqeHhMhOrz6513r1sOKnpvQ7zkhlG8tPrpilwTxHQ==}
@@ -7877,6 +7883,8 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
+
+  lyric-parser@1.0.1: {}
 
   magic-string@0.30.18:
     dependencies:

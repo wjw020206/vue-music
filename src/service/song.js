@@ -23,3 +23,28 @@ export function processSongs(songs) {
       })
   })
 }
+
+const lyricMap = {}
+
+export function getLyric(song) {
+  // 如果歌曲已经有歌词了就不再请求
+  if (song.lyric) {
+    return Promise.resolve(song.lyric)
+  }
+
+  const mid = song.mid
+  const lyric = lyricMap[mid]
+
+  if (lyric) {
+    return Promise.resolve(lyric)
+  }
+
+  return get('/api/getLyric', {
+    mid,
+  }).then((result) => {
+    const lyric = result ? result.lyric : '[00:00:00]该歌曲暂时无法获取歌词'
+    // 根据歌曲的 mid 保存歌词
+    lyricMap[mid] = lyric
+    return lyric
+  })
+}

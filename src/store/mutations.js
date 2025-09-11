@@ -27,6 +27,14 @@ const mutations = {
   setFavoriteList(state, list) {
     state.favoriteList = list
   },
+  /** 为歌曲添加对应的歌词数据 */
+  addSongLyric(state, { song, lyric }) {
+    state.sequenceList.forEach((item) => {
+      if (item.mid === song.mid) {
+        item.lyric = lyric
+      }
+    })
+  },
 }
 
 export default mutations

@@ -11,8 +11,13 @@
         <h1 class="title">{{ currentSong.name }}</h1>
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
-      <div class="middle">
-        <div class="middle-l">
+      <div
+        class="middle"
+        @touchstart.prevent="onMiddleTouchStart"
+        @touchmove.prevent="onMiddleTouchMove"
+        @touchend.prevent="onMiddleTouchEnd"
+      >
+        <div class="middle-l" :style="middleLStyle">
           <div class="cd-wrapper">
             <div ref="cdRef" class="cd">
               <img
@@ -23,9 +28,33 @@
               />
             </div>
           </div>
+          <div class="playing-lyric-wrapper">
+            <div class="playing-lyric">{{ playingLyric }}</div>
+          </div>
         </div>
+        <Scroll class="middle-r" ref="lyricScrollRef" :style="middleRStyle">
+          <div class="lyric-wrapper">
+            <div v-if="currentLyric" ref="lyricListRef">
+              <p
+                class="text"
+                :class="{ current: currentLineNum === index }"
+                v-for="(line, index) in currentLyric.lines"
+                :key="line.num"
+              >
+                {{ line.txt }}
+              </p>
+            </div>
+            <div class="pure-music" v-show="pureMusicLyric">
+              <p>{{ pureMusicLyric }}</p>
+            </div>
+          </div>
+        </Scroll>
       </div>
       <div class="bottom">
+        <div class="dot-wrapper">
+          <span class="dot" :class="{ active: currentShow === 'cd' }"></span>
+          <span class="dot" :class="{ active: currentShow === 'lyric' }"></span>
+        </div>
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
@@ -81,6 +110,9 @@ import ProgressBar from '@/components/player/process-bar.vue'
 import { formatTime } from '@/assets/js/util'
 import { PLAY_MODE } from '@/assets/js/constant'
 import useCD from './use-cd'
+import useLyric from './use-lyric'
+import Scroll from '@/components/base/scroll/index.vue'
+import useMiddleInteractive from './use-middle-interactive'
 
 const store = useStore()
 
@@ -98,6 +130,27 @@ const currentIndex = computed(() => store.state.currentIndex)
 const { modeIcon, changeMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdClassName, cdImageRef, cdRef } = useCD()
+const {
+  currentLyric,
+  currentLineNum,
+  playLyric,
+  lyricScrollRef,
+  lyricListRef,
+  stopLyric,
+  pureMusicLyric,
+  playingLyric,
+} = useLyric({
+  songReady,
+  currentTime,
+})
+const {
+  currentShow,
+  middleLStyle,
+  middleRStyle,
+  onMiddleTouchStart,
+  onMiddleTouchMove,
+  onMiddleTouchEnd,
+} = useMiddleInteractive()
 
 const playIcon = computed(() => {
   return playing.value ? 'icon-pause' : 'icon-play'
@@ -120,7 +173,14 @@ watch(playing, (newPlaying) => {
   }
 
   const audioEl = audioRef.value
-  newPlaying ? audioEl.play() : audioEl.pause()
+
+  if (newPlaying) {
+    audioEl.play()
+    playLyric()
+  } else {
+    audioEl.pause()
+    stopLyric()
+  }
 })
 
 watch(currentSong, (newSong) => {
@@ -212,6 +272,7 @@ function ready() {
   // 如果歌曲数据已经准备好了，直接返回
   if (songReady.value) return
   songReady.value = true
+  playLyric()
 }
 
 function error() {
@@ -228,6 +289,10 @@ function updateTime(event) {
 function onProgressChanging(progress) {
   progressChanging.value = true
   currentTime.value = currentSong.value.duration * progress
+  // 播放歌词同步进度条时间
+  playLyric()
+  // 停止歌词播放（手指不放进度条时）
+  stopLyric()
 }
 
 function onProgressChanged(progress) {
@@ -238,6 +303,8 @@ function onProgressChanged(progress) {
   if (!playing.value) {
     store.commit('setPlayingState', true)
   }
+
+  playLyric()
 }
 
 function end() {
@@ -353,6 +420,48 @@ function goBack() {
             }
           }
         }
+
+        .playing-lyric-wrapper {
+          width: 80%;
+          margin: 30px auto 0 auto;
+          overflow: hidden;
+          text-align: center;
+          .playing-lyric {
+            height: 20px;
+            line-height: 20px;
+            font-size: $font-size-medium;
+            color: $color-text-l;
+          }
+        }
+      }
+
+      .middle-r {
+        display: inline-block;
+        vertical-align: top;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        .lyric-wrapper {
+          width: 80%;
+          margin: 0 auto;
+          overflow: hidden;
+          text-align: center;
+          .text {
+            line-height: 32px;
+            color: $color-text-l;
+            font-size: $font-size-medium;
+            &.current {
+              color: $color-text;
+            }
+          }
+
+          .pure-music {
+            padding-top: 50%;
+            line-height: 32px;
+            color: $color-text-l;
+            font-size: $font-size-medium;
+          }
+        }
       }
     }
 
@@ -360,6 +469,25 @@ function goBack() {
       position: absolute;
       bottom: 50px;
       width: 100%;
+
+      .dot-wrapper {
+        text-align: center;
+        font-size: 0;
+        .dot {
+          display: inline-block;
+          vertical-align: middle;
+          margin: 0 4px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: $color-text-l;
+          &.active {
+            width: 20px;
+            border-radius: 5px;
+            background: $color-text-ll;
+          }
+        }
+      }
 
       .progress-wrapper {
         display: flex;
