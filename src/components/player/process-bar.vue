@@ -37,8 +37,7 @@ let touch = {}
 watch(
   () => props.progress,
   (newProgress) => {
-    const barWidth = progressBarRef.value.clientWidth - progressBtnWidth
-    offset.value = barWidth * newProgress
+    setOffset(newProgress)
   }
 )
 
@@ -79,6 +78,15 @@ function onClick(event) {
   const progress = offsetWidth / barWidth
   emit('progress-changed', progress)
 }
+
+function setOffset(progress) {
+  const barWidth = progressBarRef.value.clientWidth - progressBtnWidth
+  offset.value = barWidth * progress
+}
+
+defineExpose({
+  setOffset,
+})
 </script>
 
 <style lang="scss" scoped>

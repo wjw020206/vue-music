@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import Scroll from '@/components/base/scroll/index.vue'
+import Scroll from '@/components/wrap-scroll'
 import SongList from '@/components/base/song-list/index.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -83,6 +83,8 @@ function random() {
 
 const imageHeight = ref(0)
 
+const playList = computed(() => store.state.playList)
+
 const bgImageStyle = computed(() => {
   let zIndex = 0
   let paddingTop = '70%'
@@ -113,8 +115,10 @@ const bgImageStyle = computed(() => {
 })
 
 const scrollStyle = computed(() => {
+  const bottom = playList.value.length ? '60px' : '0'
   return {
     top: `${imageHeight.value}px`,
+    bottom,
   }
 })
 
