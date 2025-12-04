@@ -13,7 +13,7 @@ module.exports = {
     'vue/multi-word-component-names': [
       'error',
       {
-        ignores: ['index'],
+        ignores: ['index', 'singer', 'recommend', 'top-list', 'search'],
       },
     ],
   },
