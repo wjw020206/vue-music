@@ -1,0 +1,3 @@
+dist/
+backend/
+**/*.{yaml,json,md}

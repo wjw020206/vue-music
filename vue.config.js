@@ -9,8 +9,8 @@ module.exports = defineConfig({
         additionalData: `
           @use "@/assets/scss/variable.scss" as *;
           @use "@/assets/scss/mixin.scss" as *;
-        `
-      }
-    }
-  }
+        `,
+      },
+    },
+  },
 })
