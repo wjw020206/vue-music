@@ -1,5 +1,5 @@
 <template>
-  <div class="m-header">
+  <div class="header">
     <span class="icon"></span>
     <h1 class="text">Chicken Music</h1>
   </div>
@@ -8,7 +8,7 @@
 <script setup></script>
 
 <style lang="scss" scoped>
-.m-header {
+.header {
   height: 44px;
   text-align: center;
   color: $color-theme;

@@ -1,7 +1,7 @@
 <template>
-  <div class="m-tab">
+  <div class="tab">
     <RouterLink
-      class="m-tab-item"
+      class="tab-item"
       v-for="tab in tabs"
       :key="tab.path"
       :to="tab.path"
@@ -33,20 +33,20 @@ const tabs = [
 </script>
 
 <style lang="scss" scoped>
-.m-tab {
+.tab {
   display: flex;
   height: 44px;
   line-height: 44px;
   font-size: $font-size-medium;
-  .m-tab-item {
+  .tab-item {
     flex: 1;
     text-align: center;
-    .m-tab-link {
+    .tab-link {
       padding-bottom: 5px;
       color: $color-text-l;
     }
     &.router-link-active {
-      .m-tab-link {
+      .tab-link {
         color: $color-theme;
         border-bottom: 2px solid $color-theme;
       }

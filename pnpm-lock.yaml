@@ -11,6 +11,9 @@ importers:
       '@better-scroll/core':
         specifier: ^2.5.1
         version: 2.5.1
+      '@better-scroll/observe-dom':
+        specifier: ^2.5.1
+        version: 2.5.1
       '@better-scroll/slide':
         specifier: ^2.5.1
         version: 2.5.1
@@ -628,6 +631,9 @@ packages:
 
   '@better-scroll/core@2.5.1':
     resolution: {integrity: sha512-koKOuYA55dQ04FJRIVUpMGDr1hbCfWmfX0MGp1hKagkQSWSRpwblqACiwtggVauoj9aaJRJZ9hDsTM4weaavlg==}
+
+  '@better-scroll/observe-dom@2.5.1':
+    resolution: {integrity: sha512-TCMGFLRfpXBPIwtUV/efliUmfmrhSNI7NXdSyjdWjsLOS7dh3eFkmcom5ERVWMaXVELSmujGXLqobT+dT0C/jg==}
 
   '@better-scroll/shared-utils@2.5.1':
     resolution: {integrity: sha512-AplkfSjXVYP9LZiD6JsKgmgQJ/mG4uuLmBuwLz8W5OsYc7AYTfN8kw6GqZ5OwCGoXkVhBGyd8NeC4xwYItp0aw==}
@@ -5094,6 +5100,10 @@ snapshots:
   '@better-scroll/core@2.5.1':
     dependencies:
       '@better-scroll/shared-utils': 2.5.1
+
+  '@better-scroll/observe-dom@2.5.1':
+    dependencies:
+      '@better-scroll/core': 2.5.1
 
   '@better-scroll/shared-utils@2.5.1': {}
 
