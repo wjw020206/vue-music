@@ -1,12 +1,12 @@
 <template>
-  <MHeader />
-  <MTab />
+  <Header />
+  <Tab />
   <RouterView />
 </template>
 
 <script setup>
-import MHeader from '@/components/m-header/index.vue'
-import MTab from '@/components/m-tab/index.vue'
+import Header from '@/components/header/index.vue'
+import Tab from '@/components/tab/index.vue'
 </script>
 
 <style lang="scss" scoped></style>

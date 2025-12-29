@@ -6,7 +6,7 @@
       :key="tab.path"
       :to="tab.path"
     >
-      <span class="m-tab-link"> {{ tab.name }}</span>
+      <span class="m-tab-link">{{ tab.name }}</span>
     </RouterLink>
   </div>
 </template>
@@ -38,16 +38,13 @@ const tabs = [
   height: 44px;
   line-height: 44px;
   font-size: $font-size-medium;
-
   .m-tab-item {
     flex: 1;
     text-align: center;
-
     .m-tab-link {
       padding-bottom: 5px;
       color: $color-text-l;
     }
-
     &.router-link-active {
       .m-tab-link {
         color: $color-theme;
