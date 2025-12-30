@@ -16,6 +16,7 @@
     "core-js": "^3.47.0",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4",
+    "vue3-lazy": "1.0.0-alpha.1",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
