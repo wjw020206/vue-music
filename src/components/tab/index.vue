@@ -6,7 +6,7 @@
       :key="tab.path"
       :to="tab.path"
     >
-      <span class="m-tab-link">{{ tab.name }}</span>
+      <span class="tab-link">{{ tab.name }}</span>
     </RouterLink>
   </div>
 </template>
