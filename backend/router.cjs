@@ -1,5 +1,5 @@
 const axios = require('axios');
-const pinyin = require('pinyin');
+const { pinyin } = require('pinyin');
 const { Base64 } = require('js-base64');
 const qs = require('qs');
 
