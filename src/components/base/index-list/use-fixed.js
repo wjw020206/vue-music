@@ -1,6 +1,14 @@
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  ref,
+  transformVNodeArgs,
+  useTemplateRef,
+  watch,
+} from 'vue'
 
 export default function useFixed(props) {
+  const TITLE_HEIGHT = 30
   const groupRef = useTemplateRef('groupRef')
   /** 记录每组的高度 */
   const listHeights = ref([])
@@ -8,12 +16,27 @@ export default function useFixed(props) {
   const scrollY = ref(0)
   /** 当前组索引 */
   const currentIndex = ref(0)
+  /** 当前组的下一组距离当前组顶部的距离 */
+  const distance = ref(0)
 
   /** 固定标题 */
   const fixedTitle = computed(() => {
     if (scrollY.value < 0) return ''
     const currentGroup = props.data[currentIndex.value]
     return currentGroup ? currentGroup.title : ''
+  })
+
+  const fixedStyle = computed(() => {
+    const distanceVal = distance.value
+
+    const diff =
+      distanceVal > 0 && distanceVal < TITLE_HEIGHT
+        ? distanceVal - TITLE_HEIGHT
+        : 0
+
+    return {
+      transform: `translate3d(0, ${diff}px, 0)`,
+    }
   })
 
   /** 监听数据变化 */
@@ -39,6 +62,7 @@ export default function useFixed(props) {
       // 判断是否在区间内
       if (newY >= heightTop && newY <= heightBottom) {
         currentIndex.value = i
+        distance.value = heightBottom - newY
       }
     }
   })
@@ -65,5 +89,6 @@ export default function useFixed(props) {
   return {
     onScroll,
     fixedTitle,
+    fixedStyle,
   }
 }

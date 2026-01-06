@@ -11,7 +11,7 @@
         </ul>
       </li>
     </ul>
-    <div class="fixed" v-show="fixedTitle">
+    <div class="fixed" v-show="fixedTitle" :style="fixedStyle">
       <div class="fixed-title">{{ fixedTitle }}</div>
     </div>
   </Scroll>
@@ -28,7 +28,7 @@ const props = defineProps({
   },
 })
 
-const { onScroll, fixedTitle } = useFixed(props)
+const { onScroll, fixedTitle, fixedStyle } = useFixed(props)
 </script>
 
 <style lang="scss" scoped>
