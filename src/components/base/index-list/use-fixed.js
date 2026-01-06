@@ -1,11 +1,4 @@
-import {
-  computed,
-  nextTick,
-  ref,
-  transformVNodeArgs,
-  useTemplateRef,
-  watch,
-} from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 
 export default function useFixed(props) {
   const TITLE_HEIGHT = 30
@@ -90,5 +83,7 @@ export default function useFixed(props) {
     onScroll,
     fixedTitle,
     fixedStyle,
+    currentIndex,
+    groupRef,
   }
 }
