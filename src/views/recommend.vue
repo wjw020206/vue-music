@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend" v-loading:[loadingText]="loading">
+  <div class="recommend" v-loading="loading">
     <Scroll class="recommend-content">
       <div>
         <div class="slider-wrapper">
@@ -37,9 +37,6 @@ import { computed, onMounted, ref } from 'vue'
 import Slider from '@/components/base/slider/index.vue'
 import Scroll from '@/components/base/scroll/index.vue'
 
-/** 加载提示文本 */
-const loadingText = '正在载入...'
-
 /** 轮播图数据 */
 const sliders = ref([])
 /** 歌单数据 */
@@ -62,7 +59,6 @@ onMounted(async () => {
   width: 100%;
   top: 88px;
   bottom: 0;
-  overflow: scroll;
   .recommend-content {
     height: 100%;
     overflow: hidden;

@@ -1,0 +1,69 @@
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+
+export default function useFixed(props) {
+  const groupRef = useTemplateRef('groupRef')
+  /** 记录每组的高度 */
+  const listHeights = ref([])
+  /** Y 轴滚动的值 */
+  const scrollY = ref(0)
+  /** 当前组索引 */
+  const currentIndex = ref(0)
+
+  /** 固定标题 */
+  const fixedTitle = computed(() => {
+    if (scrollY.value < 0) return ''
+    const currentGroup = props.data[currentIndex.value]
+    return currentGroup ? currentGroup.title : ''
+  })
+
+  /** 监听数据变化 */
+  watch(
+    () => props.data,
+    async () => {
+      // 在 DOM 更新之后获取正确的高度
+      await nextTick()
+      calculate()
+    },
+  )
+
+  /** 监听滚动的变化 */
+  watch(scrollY, (newY) => {
+    const listHeightsVal = listHeights.value
+    // 这里使用 listHeightsVal.length - 1 是因为之前 push 了 0
+    for (let i = 0; i < listHeightsVal.length - 1; i++) {
+      // 获取区间顶部的值
+      const heightTop = listHeightsVal[i]
+      // 获取区间底部的值
+      const heightBottom = listHeightsVal[i + 1]
+
+      // 判断是否在区间内
+      if (newY >= heightTop && newY <= heightBottom) {
+        currentIndex.value = i
+      }
+    }
+  })
+
+  /** 计算每组的高度并记录到 listHeights 中 */
+  function calculate() {
+    const list = groupRef.value.children
+    const listHeightsVal = listHeights.value
+    let height = 0
+
+    listHeightsVal.length = 0
+    listHeightsVal.push(height)
+
+    for (let i = 0; i < list.length; i++) {
+      height += list[i].clientHeight
+      listHeightsVal.push(height)
+    }
+  }
+
+  function onScroll(position) {
+    scrollY.value = -position.y
+  }
+
+  return {
+    onScroll,
+    fixedTitle,
+  }
+}
