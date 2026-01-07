@@ -11,8 +11,7 @@ import MusicList from '@/components/music-list/index.vue'
 import { computed, onMounted, ref } from 'vue'
 import storage from 'good-storage'
 import { SINGER_KEY } from '@/assets/js/constant'
-import { useRoute } from 'vue-router'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()

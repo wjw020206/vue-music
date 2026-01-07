@@ -1,7 +1,12 @@
 <template>
   <div class="singer" v-loading="!singers.length">
     <IndexList :data="singers" @select="selectSinger" />
-    <RouterView :singer="selectedSinger" />
+    <!-- 在路由组件上实现过渡动画 -->
+    <RouterView v-slot="{ Component }">
+      <Transition appear name="slide">
+        <Component :is="Component" :singer="selectedSinger" />
+      </Transition>
+    </RouterView>
   </div>
 </template>
 
