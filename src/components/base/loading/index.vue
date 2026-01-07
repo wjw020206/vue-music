@@ -10,16 +10,21 @@
 <script setup>
 import { ref } from 'vue'
 
+defineOptions({
+  name: 'Loading',
+})
+
+defineExpose({
+  setTitle,
+})
+
+/** 提示文本 */
 const title = ref('正在载入...')
 
 /** 设置加载动画提示文本 */
 function setTitle(newTitle) {
   title.value = newTitle
 }
-
-defineExpose({
-  setTitle,
-})
 </script>
 
 <style lang="scss" scoped>

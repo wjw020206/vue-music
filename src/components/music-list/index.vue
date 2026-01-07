@@ -5,6 +5,12 @@
     </div>
     <h1 class="title">{{ title }}</h1>
     <div class="bg-image" :style="bgImageStyle" ref="bgImage">
+      <div class="play-btn-wrapper" :style="playBtnStyle">
+        <div class="play-btn" v-show="songs.length > 0" @click="random">
+          <i class="icon-play" />
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
       <div class="filter" :style="filterStyle" />
     </div>
     <Scroll
@@ -12,10 +18,11 @@
       :probe-type="3"
       :style="scrollStyle"
       v-loading="loading"
+      v-no-result:[noResultText]="noResult"
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
-        <SongList :songs="songs" />
+        <SongList :songs="songs" @select="selectItem" />
       </div>
     </Scroll>
   </div>
@@ -26,10 +33,12 @@ import Scroll from '@/components/base/scroll/index.vue'
 import SongList from '@/components/base/song-list/index.vue'
 import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 const RESERVED_HEIGHT = 40
 
 const router = useRouter()
+const store = useStore()
 
 const props = defineProps({
   /** 歌曲列表 */
@@ -43,6 +52,11 @@ const props = defineProps({
   pic: String,
   /** 是否加载完成 */
   loading: Boolean,
+  /** 无数据时的提示文本 */
+  noResultText: {
+    type: String,
+    default: '抱歉，没有找到可播放的歌曲',
+  },
 })
 
 /** 封面图片高度 */
@@ -108,6 +122,23 @@ const filterStyle = computed(() => {
   }
 })
 
+const noResult = computed(() => {
+  return !props.loading && !props.songs.length
+})
+
+const playBtnStyle = computed(() => {
+  const scrollYVal = scrollY.value
+  let display = ''
+
+  if (scrollYVal >= maxTranslateY.value) {
+    display = 'none'
+  }
+
+  return {
+    display,
+  }
+})
+
 onMounted(() => {
   imageHeight.value = bgImage.value.clientHeight
   maxTranslateY.value = imageHeight.value - RESERVED_HEIGHT
@@ -119,6 +150,19 @@ function goBack() {
 
 function onScroll(position) {
   scrollY.value = -position.y
+}
+
+/** 播放单首歌曲 */
+function selectItem({ index }) {
+  store.dispatch('selectPlay', {
+    list: props.songs,
+    index,
+  })
+}
+
+/** 随机顺序播放所有歌曲 */
+function random() {
+  store.dispatch('randomPlay', props.songs)
 }
 </script>
 
@@ -159,6 +203,34 @@ function onScroll(position) {
     background-size: cover;
     padding-top: 70%;
     height: 0;
+    .play-btn-wrapper {
+      position: absolute;
+      bottom: 20px;
+      z-index: 10;
+      width: 100%;
+      .play-btn {
+        box-sizing: border-box;
+        width: 135px;
+        padding: 7px 0;
+        margin: 0 auto;
+        text-align: center;
+        border: 1px solid $color-theme;
+        color: $color-theme;
+        border-radius: 100px;
+        font-size: 0;
+      }
+      .icon-play {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 6px;
+        font-size: $font-size-medium-x;
+      }
+      .text {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: $font-size-small;
+      }
+    }
     .filter {
       position: absolute;
       top: 0;

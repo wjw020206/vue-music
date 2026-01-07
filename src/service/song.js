@@ -2,7 +2,7 @@ import { get } from './base'
 
 /** 批量为歌曲添加播放 url */
 export function processSongs(songs) {
-  if (!songs.length) return Promise.reject(songs)
+  if (!songs.length) return Promise.resolve(songs)
 
   return get('/api/getSongsUrl', {
     mid: songs.map((song) => song.mid),

@@ -1,6 +1,11 @@
 <template>
   <ul class="song-list">
-    <li class="item" v-for="song in songs" :key="song.id">
+    <li
+      class="item"
+      v-for="(song, index) in songs"
+      :key="song.id"
+      @click="selectItem(song, index)"
+    >
       <div class="content">
         <h2 class="name">{{ song.name }}</h2>
         <p class="desc">{{ getDesc(song) }}</p>
@@ -17,9 +22,16 @@ defineProps({
   },
 })
 
+const emit = defineEmits(['select'])
+
 /** 获取歌曲描述 */
 function getDesc(song) {
   return `${song.singer}.${song.album}`
+}
+
+/** 选择歌曲回调 */
+function selectItem(song, index) {
+  emit('select', { song, index })
 }
 </script>
 

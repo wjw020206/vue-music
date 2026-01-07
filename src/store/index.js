@@ -1,9 +1,16 @@
-import { createStore } from 'vuex'
+import { createStore, createLogger } from 'vuex'
+import state from './state'
+import mutations from './mutations'
+import * as getters from './getters'
+import * as actions from './actions'
+
+const debug = process.env.NODE_ENV !== 'production'
 
 export default createStore({
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {},
-  modules: {},
+  state,
+  mutations,
+  getters,
+  actions,
+  strict: debug, // 开启严格模式
+  plugins: debug ? [createLogger()] : [], // 生成状态快照
 })
