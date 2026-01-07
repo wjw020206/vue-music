@@ -52,7 +52,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits('select')
+const emit = defineEmits(['select'])
 
 function onItemClick(item) {
   emit('select', item)
