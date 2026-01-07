@@ -9,6 +9,13 @@ import { getSingerDetail } from '@/service/singer'
 import { processSongs } from '@/service/song'
 import MusicList from '@/components/music-list/index.vue'
 import { computed, onMounted, ref } from 'vue'
+import storage from 'good-storage'
+import { SINGER_KEY } from '@/assets/js/constant'
+import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 const props = defineProps({
   singer: {
@@ -23,16 +30,44 @@ const loading = ref(true)
 
 /** 歌手封面 */
 const pic = computed(() => {
-  return props.singer && props.singer.pic
+  const singer = computedSinger.value
+  return singer && singer.pic
 })
 
 /** 歌手姓名 */
 const title = computed(() => {
-  return props.singer && props.singer.name
+  const singer = computedSinger.value
+  return singer && singer.name
+})
+
+/** 歌手详情数据（自动判断是从 props 还是 session 获取） */
+const computedSinger = computed(() => {
+  let result = null
+  const singer = props.singer
+
+  // 判断是否是 props 传递的 singer
+  if (singer) {
+    result = singer
+  } else {
+    const cacheSinger = storage.session.get(SINGER_KEY)
+    if (cacheSinger && cacheSinger.mid === route.params.id) {
+      result = cacheSinger
+    }
+  }
+
+  return result
 })
 
 onMounted(async () => {
-  const result = await getSingerDetail(props.singer)
+  const singer = computedSinger.value
+
+  if (!singer) {
+    const path = route.matched[0].path
+    router.push(path)
+    return
+  }
+
+  const result = await getSingerDetail(singer)
   songs.value = await processSongs(result.songs)
   loading.value = false
 })

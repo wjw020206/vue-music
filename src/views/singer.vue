@@ -6,8 +6,10 @@
 </template>
 
 <script setup>
+import { SINGER_KEY } from '@/assets/js/constant'
 import IndexList from '@/components/base/index-list/index.vue'
 import { getSingerList } from '@/service/singer'
+import storage from 'good-storage'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -21,9 +23,15 @@ const selectedSinger = ref(null)
 /** 选择要查看的歌手详情 */
 function selectSinger(singer) {
   selectedSinger.value = singer
+  cacheSinger(singer)
   router.push({
     path: `/singer/${singer.mid}`,
   })
+}
+
+/** 缓存选择的歌手详情数据 */
+function cacheSinger(singer) {
+  storage.session.set(SINGER_KEY, singer)
 }
 
 onMounted(async () => {
