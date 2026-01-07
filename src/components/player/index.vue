@@ -17,13 +17,13 @@
             <i class="icon-sequence" />
           </div>
           <div class="icon i-left">
-            <i class="icon-prev" />
+            <i class="icon-prev" @click="prev" />
           </div>
-          <div @click="togglePlay" class="icon i-center">
-            <i :class="playIcon" />
+          <div class="icon i-center">
+            <i :class="playIcon" @click="togglePlay" />
           </div>
           <div class="icon i-right">
-            <i class="icon-next" />
+            <i class="icon-next" @click="next" />
           </div>
           <div class="icon i-right">
             <i class="icon-not-favorite" />
@@ -58,8 +58,19 @@ const playing = computed(() => {
   return store.state.playing
 })
 
+/** 根据正在播放状态切换对应状态的图标 */
 const playIcon = computed(() => {
   return playing.value ? 'icon-pause' : 'icon-play'
+})
+
+/** 当前播放歌曲的下标 */
+const currentIndex = computed(() => {
+  return store.state.currentIndex
+})
+
+/** 播放列表 */
+const playList = computed(() => {
+  return store.state.playList
 })
 
 // 监听当前播放歌曲是否发生变化
@@ -93,6 +104,68 @@ function togglePlay() {
 // 电脑待机或者睡眠等情况会触发（系统暂停而非用户手动暂停）
 function pause() {
   store.commit('setPlayingState', false)
+}
+
+/** 切换上一首歌曲 */
+function prev() {
+  const list = playList.value
+
+  // 判断播放列表是否为空
+  if (!list.length) return
+
+  // 判断播放列表中是否只有一首歌
+  if (list.length === 1) {
+    loop()
+  } else {
+    let index = currentIndex.value - 1
+
+    // 当已经是播放列表中第一首歌时（index 为 0）
+    if (index === -1) {
+      index = list.length - 1
+    }
+
+    store.commit('setCurrentIndex', index)
+
+    // 判断当前播放状态是否为暂停状态
+    if (!playing.value) {
+      store.commit('setPlayingState', true)
+    }
+  }
+}
+
+/** 切换下一首歌曲 */
+function next() {
+  const list = playList.value
+
+  // 判断播放列表是否为空
+  if (!list.length) return
+
+  // 判断播放列表中是否只有一首歌
+  if (list.length === 1) {
+    loop()
+  } else {
+    let index = currentIndex.value + 1
+
+    // 当已经是播放列表中第一首歌时（index 为 0）
+    if (index === list.length) {
+      index = 0
+    }
+
+    store.commit('setCurrentIndex', index)
+
+    // 判断当前播放状态是否为暂停状态
+    if (!playing.value) {
+      store.commit('setPlayingState', true)
+    }
+  }
+}
+
+/** 循环播放正在播放的歌曲 */
+function loop() {
+  const audioEl = audioRef.value
+  // 设置歌曲重头播放
+  audioEl.currentTime = 0
+  audioEl.play()
 }
 </script>
 
