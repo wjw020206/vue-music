@@ -15,7 +15,11 @@
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
-            <ProgressBar :progress />
+            <ProgressBar
+              :progress
+              @progress-changing="onProgressChanging"
+              @progress-changed="onProgressChanged"
+            />
           </div>
           <span class="time time-r">{{
             formatTime(currentSong.duration)
@@ -60,6 +64,9 @@ import useMode from './use-mode'
 import useFavorite from './use-favorite'
 import ProgressBar from './progress-bar.vue'
 import { formatTime } from '@/assets/js/util'
+
+/** 进度条是否正在拖动的标志位 */
+let progressChanging = false
 
 const store = useStore()
 const { modeIcon, changeMode } = useMode()
@@ -198,7 +205,27 @@ function error() {
 }
 /** 歌曲播放时间更新回调 */
 function updateTime(event) {
-  currentTime.value = event.target.currentTime
+  // 当手指拖动进度条时不自动更新播放时间
+  if (!progressChanging) {
+    currentTime.value = event.target.currentTime
+  }
+}
+/** 进度条正在拖动回调 */
+function onProgressChanging(propgress) {
+  progressChanging = true
+  currentTime.value = currentSong.value.duration * propgress
+}
+/** 进度条拖动结束回调 */
+function onProgressChanged(propgress) {
+  progressChanging = false
+  audioRef.value.currentTime = currentTime.value =
+    currentSong.value.duration * propgress
+
+  // 判断是否暂停播放
+  if (!playing.value) {
+    // 如果暂停了，拖动进度条后让它播放
+    store.commit('setPlayingState', true)
+  }
 }
 </script>
 
