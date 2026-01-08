@@ -53,6 +53,7 @@
       @canplay="ready"
       @error="error"
       @timeupdate="updateTime"
+      @ended="end"
     />
   </div>
 </template>
@@ -64,12 +65,13 @@ import useMode from './use-mode'
 import useFavorite from './use-favorite'
 import ProgressBar from './progress-bar.vue'
 import { formatTime } from '@/assets/js/util'
+import { PLAY_MODE } from '@/assets/js/constant'
 
 /** 进度条是否正在拖动的标志位 */
 let progressChanging = false
 
 const store = useStore()
-const { modeIcon, changeMode } = useMode()
+const { modeIcon, changeMode, playMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 
 const audioRef = useTemplateRef('audioRef')
@@ -146,7 +148,7 @@ function prev() {
   } else {
     let index = currentIndex.value - 1
 
-    // 当已经是播放列表中第一首歌时（index 为 0）
+    // 判断是否是播放列表中第一首歌（index 为 0）
     if (index === -1) {
       index = list.length - 1
     }
@@ -172,7 +174,7 @@ function next() {
   } else {
     let index = currentIndex.value + 1
 
-    // 当已经是播放列表中第一首歌时（index 为 0）
+    // 判断是否是播放列表中最后一首歌
     if (index === list.length) {
       index = 0
     }
@@ -191,6 +193,7 @@ function loop() {
   // 设置歌曲重头播放
   audioEl.currentTime = 0
   audioEl.play()
+  store.commit('setPlayingState', true)
 }
 /** 歌曲缓冲准备好时回调 */
 function ready() {
@@ -225,6 +228,17 @@ function onProgressChanged(propgress) {
   if (!playing.value) {
     // 如果暂停了，拖动进度条后让它播放
     store.commit('setPlayingState', true)
+  }
+}
+/** 歌曲播放结束回调 */
+function end() {
+  currentTime.value = 0
+
+  // 判断是否是循环播放模式
+  if (playMode.value === PLAY_MODE.loop) {
+    loop()
+  } else {
+    next()
   }
 }
 </script>

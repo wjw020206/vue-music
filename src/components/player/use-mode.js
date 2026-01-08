@@ -28,5 +28,6 @@ export default function useMode() {
   return {
     modeIcon,
     changeMode,
+    playMode,
   }
 }
