@@ -98,11 +98,9 @@ const bgImageStyle = computed(() => {
   }
 })
 
-const scrollStyle = computed(() => {
-  return {
-    top: `${imageHeight.value}px`,
-  }
-})
+const scrollStyle = computed(() => ({
+  top: `${imageHeight.value}px`,
+}))
 
 const filterStyle = computed(() => {
   let blur = 0
@@ -122,9 +120,7 @@ const filterStyle = computed(() => {
   }
 })
 
-const noResult = computed(() => {
-  return !props.loading && !props.songs.length
-})
+const noResult = computed(() => !props.loading && !props.songs.length)
 
 const playBtnStyle = computed(() => {
   const scrollYVal = scrollY.value

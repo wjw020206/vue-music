@@ -5,9 +5,7 @@ export default function useShortcut(props, groupRef) {
   const scrollRef = useTemplateRef('scrollRef')
 
   /** 快速导航列表 */
-  const shortcutList = computed(() => {
-    return props.data.map((group) => group.title)
-  })
+  const shortcutList = computed(() => props.data.map((group) => group.title))
 
   const touch = {}
 

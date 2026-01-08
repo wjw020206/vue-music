@@ -42,9 +42,7 @@ const sliders = ref([])
 /** 歌单数据 */
 const albums = ref([])
 
-const loading = computed(() => {
-  return !sliders.value.length && !albums.value.length
-})
+const loading = computed(() => !sliders.value.length && !albums.value.length)
 
 onMounted(async () => {
   const result = await getRecommend()

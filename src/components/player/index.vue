@@ -14,7 +14,7 @@
       <div class="bottom">
         <div class="operators">
           <div class="icon i-left">
-            <i class="icon-sequence" />
+            <i :class="modeIcon" @click="changeMode" />
           </div>
           <div class="icon i-left" :class="disableCls">
             <i class="icon-prev" @click="prev" />
@@ -38,46 +38,34 @@
 <script setup>
 import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
+import useMode from './use-mode'
 
 const store = useStore()
+const { modeIcon, changeMode } = useMode()
 
 const audioRef = useTemplateRef('audioRef')
 /** 歌曲是否准备好播放 */
 const songReady = ref(false)
 
 /** 播放器是否全屏播放 */
-const fullScreen = computed(() => {
-  return store.state.fullScreen
-})
+const fullScreen = computed(() => store.state.fullScreen)
 
 /** 当前播放的歌曲 */
-const currentSong = computed(() => {
-  return store.getters.currentSong
-})
+const currentSong = computed(() => store.getters.currentSong)
 
 /** 是否正在播放歌曲 */
-const playing = computed(() => {
-  return store.state.playing
-})
+const playing = computed(() => store.state.playing)
 
 /** 根据正在播放状态切换对应状态的图标 */
-const playIcon = computed(() => {
-  return playing.value ? 'icon-pause' : 'icon-play'
-})
+const playIcon = computed(() => (playing.value ? 'icon-pause' : 'icon-play'))
 
 /** 当前播放歌曲的下标 */
-const currentIndex = computed(() => {
-  return store.state.currentIndex
-})
+const currentIndex = computed(() => store.state.currentIndex)
 
 /** 播放列表 */
-const playList = computed(() => {
-  return store.state.playList
-})
+const playList = computed(() => store.state.playList)
 
-const disableCls = computed(() => {
-  return songReady.value ? '' : 'disable'
-})
+const disableCls = computed(() => (songReady.value ? '' : 'disable'))
 
 // 监听当前播放歌曲是否发生变化
 watch(currentSong, (newSong) => {
