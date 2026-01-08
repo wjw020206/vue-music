@@ -16,13 +16,13 @@
           <div class="icon i-left">
             <i class="icon-sequence" />
           </div>
-          <div class="icon i-left">
+          <div class="icon i-left" :class="disableCls">
             <i class="icon-prev" @click="prev" />
           </div>
-          <div class="icon i-center">
+          <div class="icon i-center" :class="disableCls">
             <i :class="playIcon" @click="togglePlay" />
           </div>
-          <div class="icon i-right">
+          <div class="icon i-right" :class="disableCls">
             <i class="icon-next" @click="next" />
           </div>
           <div class="icon i-right">
@@ -31,17 +31,19 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @pause="pause" />
+    <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" />
   </div>
 </template>
 
 <script setup>
-import { computed, useTemplateRef, watch } from 'vue'
+import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
 
 const audioRef = useTemplateRef('audioRef')
+/** 歌曲是否准备好播放 */
+const songReady = ref(false)
 
 /** 播放器是否全屏播放 */
 const fullScreen = computed(() => {
@@ -73,11 +75,16 @@ const playList = computed(() => {
   return store.state.playList
 })
 
+const disableCls = computed(() => {
+  return songReady.value ? '' : 'disable'
+})
+
 // 监听当前播放歌曲是否发生变化
 watch(currentSong, (newSong) => {
   // 判断歌曲是否合法（没有 id 或者没有播放地址为不合法歌曲数据）
   if (!newSong.id || !newSong.url) return
-
+  // 每次歌曲切换时重置歌曲准备状态标识符
+  songReady.value = false
   const audioEl = audioRef.value
   audioEl.src = newSong.url
   // 播放
@@ -86,6 +93,8 @@ watch(currentSong, (newSong) => {
 
 // 监听歌曲播放状态的变化
 watch(playing, (newPlaying) => {
+  // 判断当前歌曲是否已经准备好播放
+  if (!songReady.value) return
   const audioEl = audioRef.value
   newPlaying ? audioEl.play() : audioEl.pause()
 })
@@ -97,6 +106,8 @@ function goBack() {
 
 /** 切换播放状态 */
 function togglePlay() {
+  // 判断当前歌曲是否已经准备好播放
+  if (!songReady.value) return
   store.commit('setPlayingState', !playing.value)
 }
 
@@ -110,8 +121,8 @@ function pause() {
 function prev() {
   const list = playList.value
 
-  // 判断播放列表是否为空
-  if (!list.length) return
+  // 判断播放列表是否为空以及判断当前歌曲是否已经准备好播放
+  if (!songReady.value || !list.length) return
 
   // 判断播放列表中是否只有一首歌
   if (list.length === 1) {
@@ -137,8 +148,8 @@ function prev() {
 function next() {
   const list = playList.value
 
-  // 判断播放列表是否为空
-  if (!list.length) return
+  // 判断播放列表是否为空以及判断当前歌曲是否已经准备好播放
+  if (!songReady.value || !list.length) return
 
   // 判断播放列表中是否只有一首歌
   if (list.length === 1) {
@@ -166,6 +177,19 @@ function loop() {
   // 设置歌曲重头播放
   audioEl.currentTime = 0
   audioEl.play()
+}
+
+/** 歌曲缓冲准备好时回调 */
+function ready() {
+  // 如果歌曲已经准备好播放就不需要执行
+  if (songReady.value) return
+  songReady.value = true
+}
+
+/** 当歌曲播放出错时的回调 */
+function error() {
+  // 防止歌曲播放出错时无法切歌
+  songReady.value = true
 }
 </script>
 
