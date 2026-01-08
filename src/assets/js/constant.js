@@ -1,5 +1,7 @@
 /** 歌手详情存储 key */
 export const SINGER_KEY = '__singer__'
+/** 歌曲收藏存储 key */
+export const FAVORITE_KEY = '__favorite__'
 
 /** 播放模式 */
 export const PLAY_MODE = {

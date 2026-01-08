@@ -26,7 +26,10 @@
             <i class="icon-next" @click="next" />
           </div>
           <div class="icon i-right">
-            <i class="icon-not-favorite" />
+            <i
+              :class="getFavoriteIcon(currentSong)"
+              @click="toggleFavorite(currentSong)"
+            />
           </div>
         </div>
       </div>
@@ -39,9 +42,11 @@
 import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import useMode from './use-mode'
+import useFavorite from './use-favorite'
 
 const store = useStore()
 const { modeIcon, changeMode } = useMode()
+const { getFavoriteIcon, toggleFavorite } = useFavorite()
 
 const audioRef = useTemplateRef('audioRef')
 /** 歌曲是否准备好播放 */
