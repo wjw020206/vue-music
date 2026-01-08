@@ -37,9 +37,6 @@ import { useStore } from 'vuex'
 
 const RESERVED_HEIGHT = 40
 
-const router = useRouter()
-const store = useStore()
-
 const props = defineProps({
   /** 歌曲列表 */
   songs: {
@@ -59,14 +56,18 @@ const props = defineProps({
   },
 })
 
+const router = useRouter()
+const store = useStore()
+
+/** 封面图片元素 */
+const bgImage = useTemplateRef('bgImage')
+
 /** 封面图片高度 */
 const imageHeight = ref(0)
 /** Y 轴滚动的距离 */
 const scrollY = ref(0)
 /** 最大 Y 轴可滚动的距离 */
 const maxTranslateY = ref(0)
-/** 封面图片元素 */
-const bgImage = useTemplateRef('bgImage')
 
 const bgImageStyle = computed(() => {
   const scrollYVal = scrollY.value
@@ -97,11 +98,9 @@ const bgImageStyle = computed(() => {
     transform: `scale(${scale}) translateZ(${translateZ}px)`,
   }
 })
-
 const scrollStyle = computed(() => ({
   top: `${imageHeight.value}px`,
 }))
-
 const filterStyle = computed(() => {
   let blur = 0
   const scrollYVal = scrollY.value
@@ -119,9 +118,7 @@ const filterStyle = computed(() => {
     backdropFilter: `blur(${blur}px)`,
   }
 })
-
 const noResult = computed(() => !props.loading && !props.songs.length)
-
 const playBtnStyle = computed(() => {
   const scrollYVal = scrollY.value
   let display = ''
@@ -143,11 +140,9 @@ onMounted(() => {
 function goBack() {
   router.back()
 }
-
 function onScroll(position) {
   scrollY.value = -position.y
 }
-
 /** 播放单首歌曲 */
 function selectItem({ index }) {
   store.dispatch('selectPlay', {
@@ -155,7 +150,6 @@ function selectItem({ index }) {
     index,
   })
 }
-
 /** 随机顺序播放所有歌曲 */
 function random() {
   store.dispatch('randomPlay', props.songs)

@@ -13,14 +13,14 @@ import storage from 'good-storage'
 import { SINGER_KEY } from '@/assets/js/constant'
 import { useRoute, useRouter } from 'vue-router'
 
-const route = useRoute()
-const router = useRouter()
-
 const props = defineProps({
   singer: {
     type: Object,
   },
 })
+
+const route = useRoute()
+const router = useRouter()
 
 /** 歌曲列表 */
 const songs = ref([])
@@ -32,13 +32,11 @@ const pic = computed(() => {
   const singer = computedSinger.value
   return singer && singer.pic
 })
-
 /** 歌手姓名 */
 const title = computed(() => {
   const singer = computedSinger.value
   return singer && singer.name
 })
-
 /** 歌手详情数据（自动判断是从 props 还是 session 获取） */
 const computedSinger = computed(() => {
   let result = null

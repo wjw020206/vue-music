@@ -33,7 +33,6 @@ function selectSinger(singer) {
     path: `/singer/${singer.mid}`,
   })
 }
-
 /** 缓存选择的歌手详情数据 */
 function cacheSinger(singer) {
   storage.session.set(SINGER_KEY, singer)

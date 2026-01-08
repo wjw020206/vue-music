@@ -52,18 +52,18 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['select'])
-
-function onItemClick(item) {
-  emit('select', item)
-}
-
 const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } =
   useFixed(props)
 const { shortcutList, onShortcutTouchStart, onShortcutTouchMove } = useShortcut(
   props,
   groupRef,
 )
+
+const emit = defineEmits(['select'])
+
+function onItemClick(item) {
+  emit('select', item)
+}
 </script>
 
 <style lang="scss" scoped>

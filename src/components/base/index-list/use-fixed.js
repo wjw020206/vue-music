@@ -2,7 +2,9 @@ import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 
 export default function useFixed(props) {
   const TITLE_HEIGHT = 30
+
   const groupRef = useTemplateRef('groupRef')
+
   /** 记录每组的高度 */
   const listHeights = ref([])
   /** Y 轴滚动的值 */
@@ -18,7 +20,6 @@ export default function useFixed(props) {
     const currentGroup = props.data[currentIndex.value]
     return currentGroup ? currentGroup.title : ''
   })
-
   const fixedStyle = computed(() => {
     const distanceVal = distance.value
 
@@ -41,7 +42,6 @@ export default function useFixed(props) {
       calculate()
     },
   )
-
   /** 监听滚动的变化 */
   watch(scrollY, (newY) => {
     const listHeightsVal = listHeights.value
@@ -74,7 +74,6 @@ export default function useFixed(props) {
       listHeightsVal.push(height)
     }
   }
-
   function onScroll(position) {
     scrollY.value = -position.y
   }

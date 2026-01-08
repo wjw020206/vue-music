@@ -12,6 +12,20 @@ export function shuffle(source) {
   return arr
 }
 
+/** 格式化时间
+ * @param {number} interval 秒
+ */
+export function formatTime(interval) {
+  // 将毫秒数向下取整
+  interval = interval | 0
+
+  // 计算分钟部分
+  const minute = (((interval / 60) | 0) + '').padStart(2, '0')
+  const second = ((interval % 60) + '').padStart(2, '0')
+
+  return `${minute}:${second}`
+}
+
 /** 随机获取一个整数值（取 0 ~ max 之间的值） */
 function getRandomInt(max) {
   return Math.floor(Math.random() * (max + 1))

@@ -2,12 +2,12 @@ import { computed, useTemplateRef } from 'vue'
 
 export default function useShortcut(props, groupRef) {
   const ANCHOR_HEIGHT = 18
+  const touch = {}
+
   const scrollRef = useTemplateRef('scrollRef')
 
   /** 快速导航列表 */
   const shortcutList = computed(() => props.data.map((group) => group.title))
-
-  const touch = {}
 
   function onShortcutTouchStart(event) {
     const anchorIndex = parseInt(event.target.dataset.index)
@@ -17,7 +17,6 @@ export default function useShortcut(props, groupRef) {
 
     scrollTo(anchorIndex)
   }
-
   function onShortcutTouchMove(event) {
     // 记录移动时手指放置的位置
     touch.y2 = event.touches[0].pageY
@@ -28,7 +27,6 @@ export default function useShortcut(props, groupRef) {
 
     scrollTo(anchorIndex)
   }
-
   /** 滚动到指定下标的元素 */
   function scrollTo(index) {
     // 判断 index 是否是 NaN，解决拖动容器报错的问题

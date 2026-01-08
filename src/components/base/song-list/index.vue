@@ -28,7 +28,6 @@ const emit = defineEmits(['select'])
 function getDesc(song) {
   return `${song.singer}.${song.album}`
 }
-
 /** 选择歌曲回调 */
 function selectItem(song, index) {
   emit('select', { song, index })

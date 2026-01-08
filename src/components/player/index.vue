@@ -12,6 +12,15 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="bottom">
+        <div class="progress-wrapper">
+          <span class="time time-l">{{ formatTime(currentTime) }}</span>
+          <div class="progress-bar-wrapper">
+            <ProgressBar :progress />
+          </div>
+          <span class="time time-r">{{
+            formatTime(currentSong.duration)
+          }}</span>
+        </div>
         <div class="operators">
           <div class="icon i-left">
             <i :class="modeIcon" @click="changeMode" />
@@ -34,7 +43,13 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" />
+    <audio
+      ref="audioRef"
+      @pause="pause"
+      @canplay="ready"
+      @error="error"
+      @timeupdate="updateTime"
+    />
   </div>
 </template>
 
@@ -43,47 +58,51 @@ import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import useMode from './use-mode'
 import useFavorite from './use-favorite'
+import ProgressBar from './progress-bar.vue'
+import { formatTime } from '@/assets/js/util'
 
 const store = useStore()
 const { modeIcon, changeMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 
 const audioRef = useTemplateRef('audioRef')
+
 /** 歌曲是否准备好播放 */
 const songReady = ref(false)
+/** 当前歌曲已经播放的时长 */
+const currentTime = ref(0)
 
 /** 播放器是否全屏播放 */
 const fullScreen = computed(() => store.state.fullScreen)
-
 /** 当前播放的歌曲 */
 const currentSong = computed(() => store.getters.currentSong)
-
 /** 是否正在播放歌曲 */
 const playing = computed(() => store.state.playing)
-
 /** 根据正在播放状态切换对应状态的图标 */
 const playIcon = computed(() => (playing.value ? 'icon-pause' : 'icon-play'))
-
 /** 当前播放歌曲的下标 */
 const currentIndex = computed(() => store.state.currentIndex)
-
 /** 播放列表 */
 const playList = computed(() => store.state.playList)
-
+/** 根据歌曲准备状态显示对应的按钮是否可用状态 */
 const disableCls = computed(() => (songReady.value ? '' : 'disable'))
+/** 当前歌曲播放的进度 */
+const progress = computed(() => currentTime.value / currentSong.value.duration)
 
 // 监听当前播放歌曲是否发生变化
 watch(currentSong, (newSong) => {
   // 判断歌曲是否合法（没有 id 或者没有播放地址为不合法歌曲数据）
   if (!newSong.id || !newSong.url) return
-  // 每次歌曲切换时重置歌曲准备状态标识符
+
+  // 歌曲切换时已经播放的时间设为 0
+  currentTime.value = 0
+  // 歌曲切换时重置歌曲准备状态标识符
   songReady.value = false
   const audioEl = audioRef.value
   audioEl.src = newSong.url
   // 播放
   audioEl.play()
 })
-
 // 监听歌曲播放状态的变化
 watch(playing, (newPlaying) => {
   // 判断当前歌曲是否已经准备好播放
@@ -96,20 +115,17 @@ watch(playing, (newPlaying) => {
 function goBack() {
   store.commit('setFullScreen', false)
 }
-
 /** 切换播放状态 */
 function togglePlay() {
   // 判断当前歌曲是否已经准备好播放
   if (!songReady.value) return
   store.commit('setPlayingState', !playing.value)
 }
-
 /** audio 元素原生歌曲播放暂停事件 */
 // 电脑待机或者睡眠等情况会触发（系统暂停而非用户手动暂停）
 function pause() {
   store.commit('setPlayingState', false)
 }
-
 /** 切换上一首歌曲 */
 function prev() {
   const list = playList.value
@@ -136,7 +152,6 @@ function prev() {
     }
   }
 }
-
 /** 切换下一首歌曲 */
 function next() {
   const list = playList.value
@@ -163,7 +178,6 @@ function next() {
     }
   }
 }
-
 /** 循环播放正在播放的歌曲 */
 function loop() {
   const audioEl = audioRef.value
@@ -171,18 +185,20 @@ function loop() {
   audioEl.currentTime = 0
   audioEl.play()
 }
-
 /** 歌曲缓冲准备好时回调 */
 function ready() {
   // 如果歌曲已经准备好播放就不需要执行
   if (songReady.value) return
   songReady.value = true
 }
-
 /** 当歌曲播放出错时的回调 */
 function error() {
   // 防止歌曲播放出错时无法切歌
   songReady.value = true
+}
+/** 歌曲播放时间更新回调 */
+function updateTime(event) {
+  currentTime.value = event.target.currentTime
 }
 </script>
 
@@ -247,6 +263,29 @@ function error() {
       position: absolute;
       bottom: 50px;
       width: 100%;
+      .progress-wrapper {
+        display: flex;
+        align-items: center;
+        width: 80%;
+        margin: 0px auto;
+        padding: 10px 0;
+        .time {
+          color: $color-text;
+          font-size: $font-size-small;
+          flex: 0 0 40px;
+          line-height: 30px;
+          width: 40px;
+          &.time-l {
+            text-align: left;
+          }
+          &.time-r {
+            text-align: right;
+          }
+        }
+        .progress-bar-wrapper {
+          flex: 1;
+        }
+      }
       .operators {
         display: flex;
         align-items: center;
