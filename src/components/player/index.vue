@@ -12,7 +12,7 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="middle">
-        <div class="middle-l">
+        <div class="middle-l" v-show="false">
           <div class="cd-wrapper">
             <div class="cd" ref="cdRef">
               <img
@@ -24,6 +24,20 @@
             </div>
           </div>
         </div>
+        <Scroll class="middle-r" ref="lyricScrollRef">
+          <div class="lyric-wrapper">
+            <div v-if="currentLyric" ref="lyricListRef">
+              <p
+                class="text"
+                :class="{ current: currentLineNum === index }"
+                v-for="(line, index) in currentLyric.lines"
+                :key="line.num"
+              >
+                {{ line.txt }}
+              </p>
+            </div>
+          </div>
+        </Scroll>
       </div>
       <div class="bottom">
         <div class="progress-wrapper">
@@ -81,14 +95,11 @@ import ProgressBar from './progress-bar.vue'
 import { formatTime } from '@/assets/js/util'
 import { PLAY_MODE } from '@/assets/js/constant'
 import useCd from './use-cd'
+import useLyric from './use-lyric'
+import Scroll from '@/components/base/scroll/index.vue'
 
 /** 进度条是否正在拖动的标志位 */
 let progressChanging = false
-
-const store = useStore()
-const { modeIcon, changeMode, playMode } = useMode()
-const { getFavoriteIcon, toggleFavorite } = useFavorite()
-const { cdCls } = useCd()
 
 const audioRef = useTemplateRef('audioRef')
 
@@ -114,6 +125,15 @@ const disableCls = computed(() => (songReady.value ? '' : 'disable'))
 /** 当前歌曲播放的进度 */
 const progress = computed(() => currentTime.value / currentSong.value.duration)
 
+const store = useStore()
+const { modeIcon, changeMode, playMode } = useMode()
+const { getFavoriteIcon, toggleFavorite } = useFavorite()
+const { cdCls } = useCd()
+const { currentLyric, currentLineNum, playLyric, stopLyric } = useLyric({
+  songReady,
+  currentTime,
+})
+
 // 监听当前播放歌曲是否发生变化
 watch(currentSong, (newSong) => {
   // 判断歌曲是否合法（没有 id 或者没有播放地址为不合法歌曲数据）
@@ -133,7 +153,17 @@ watch(playing, (newPlaying) => {
   // 判断当前歌曲是否已经准备好播放
   if (!songReady.value) return
   const audioEl = audioRef.value
-  newPlaying ? audioEl.play() : audioEl.pause()
+  if (newPlaying) {
+    // 播放歌曲
+    audioEl.play()
+    // 播放歌词
+    playLyric()
+  } else {
+    // 暂停歌曲
+    audioEl.pause()
+    // 暂停歌词
+    stopLyric()
+  }
 })
 
 /** 隐藏播放器全屏播放 */
@@ -216,6 +246,9 @@ function ready() {
   // 如果歌曲已经准备好播放就不需要执行
   if (songReady.value) return
   songReady.value = true
+
+  // 当歌曲准备好时，播放歌词
+  playLyric()
 }
 /** 当歌曲播放出错时的回调 */
 function error() {
@@ -233,6 +266,12 @@ function updateTime(event) {
 function onProgressChanging(propgress) {
   progressChanging = true
   currentTime.value = currentSong.value.duration * propgress
+
+  // 同步歌词位置
+  // 播放歌词
+  playLyric()
+  // 暂停歌词播放
+  stopLyric()
 }
 /** 进度条拖动结束回调 */
 function onProgressChanged(propgress) {
@@ -245,6 +284,10 @@ function onProgressChanged(propgress) {
     // 如果暂停了，拖动进度条后让它播放
     store.commit('setPlayingState', true)
   }
+
+  // 同步歌词位置
+  // 播放歌词
+  playLyric()
 }
 /** 歌曲播放结束回调 */
 function end() {
@@ -353,6 +396,27 @@ function end() {
             }
             .playing {
               animation: rotate 20s linear infinite;
+            }
+          }
+        }
+      }
+      .middle-r {
+        display: inline-block;
+        vertical-align: top;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        .lyric-wrapper {
+          width: 80%;
+          margin: 0 auto;
+          overflow: hidden;
+          text-align: center;
+          .text {
+            line-height: 32px;
+            color: $color-text-l;
+            font-size: $font-size-medium;
+            &.current {
+              color: $color-text;
             }
           }
         }
