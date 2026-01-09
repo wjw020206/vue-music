@@ -84,9 +84,9 @@ function showNormalPlayer() {
       width: 100%;
       img {
         border-radius: 50%;
-      }
-      &.playing {
-        animation: rotate 20s linear infinite;
+        &.playing {
+          animation: rotate 20s linear infinite;
+        }
       }
     }
   }
