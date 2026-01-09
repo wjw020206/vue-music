@@ -16,6 +16,12 @@
         <h2 class="name">{{ currentSong.name }}</h2>
         <p class="desc">{{ currentSong.singer }}</p>
       </div>
+      <div class="control">
+        <!-- 播放暂停按钮 -->
+        <ProgressCircle :radius="32" :progress>
+          <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay" />
+        </ProgressCircle>
+      </div>
     </div>
   </Transition>
 </template>
@@ -24,12 +30,25 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import useCd from './use-cd'
+import ProgressCircle from './progress-circle.vue'
+
+defineProps({
+  progress: {
+    type: Number,
+    default: 0,
+  },
+  togglePlay: Function,
+})
 
 const store = useStore()
 const { cdCls } = useCd()
 
 const currentSong = computed(() => store.getters.currentSong)
 const fullScreen = computed(() => store.state.fullScreen)
+const playing = computed(() => store.state.playing)
+const miniPlayIcon = computed(() => {
+  return playing.value ? 'icon-pause-mini' : 'icon-play-mini'
+})
 
 /** 显示全屏播放组件 */
 function showNormalPlayer() {
@@ -74,6 +93,18 @@ function showNormalPlayer() {
     @include no-wrap();
     font-size: $font-size-small;
     color: $color-text-d;
+  }
+  .control {
+    flex: 0 0 30px;
+    width: 30px;
+    padding: 0 10px;
+    .icon-mini {
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: $color-theme-d;
+      font-size: 32px;
+    }
   }
   &.mini-enter-active,
   &.mini-leave-active {
