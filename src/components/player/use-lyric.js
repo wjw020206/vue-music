@@ -15,7 +15,9 @@ export default function useLyric({ songReady, currentTime }) {
   /** 当前显示的歌词行号 */
   const currentLineNum = ref(0)
   /** 纯音乐歌词 */
-  const pureMusicLyric = ref(0)
+  const pureMusicLyric = ref('')
+  /** 当前正在播放的歌词 */
+  const playingLyric = ref('')
 
   const currentSong = computed(() => store.getters.currentSong)
 
@@ -32,6 +34,10 @@ export default function useLyric({ songReady, currentTime }) {
     currentLyric.value = null
     // 重置当前显示的歌词行号
     currentLineNum.value = 0
+    // 重置纯音乐的提示
+    pureMusicLyric.value = ''
+    // 重置正在播放的歌词
+    playingLyric.value = ''
 
     const lyric = await getLyric(newSong)
     // 添加歌词到歌曲对象中
@@ -57,7 +63,10 @@ export default function useLyric({ songReady, currentTime }) {
       }
     } else {
       // 去除纯音乐提示前面的 [00:00:00]
-      pureMusicLyric.value = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, '')
+      playingLyric.value = pureMusicLyric.value = lyric.replace(
+        /\[(\d{2}):(\d{2}):(\d{2})\]/g,
+        '',
+      )
     }
   })
 
@@ -83,8 +92,9 @@ export default function useLyric({ songReady, currentTime }) {
   }
 
   /** 歌词播放回调（每播放完一行触发一次） */
-  function handleLyric({ lineNum }) {
+  function handleLyric({ lineNum, txt }) {
     currentLineNum.value = lineNum
+    playingLyric.value = txt
     const scrollComponent = lyricScrollRef.value
     const listElement = lyricListRef.value
 
@@ -108,5 +118,6 @@ export default function useLyric({ songReady, currentTime }) {
     playLyric,
     stopLyric,
     pureMusicLyric,
+    playingLyric,
   }
 }

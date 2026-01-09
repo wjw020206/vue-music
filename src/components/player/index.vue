@@ -12,7 +12,7 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="middle">
-        <div class="middle-l" v-show="false">
+        <div class="middle-l">
           <div class="cd-wrapper">
             <div class="cd" ref="cdRef">
               <img
@@ -22,6 +22,9 @@
                 ref="cdImageRef"
               />
             </div>
+          </div>
+          <div class="playing-lyric-wrapper">
+            <div class="playing-lyric">{{ playingLyric }}</div>
           </div>
         </div>
         <Scroll class="middle-r" ref="lyricScrollRef">
@@ -133,11 +136,17 @@ const store = useStore()
 const { modeIcon, changeMode, playMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls } = useCd()
-const { currentLyric, currentLineNum, playLyric, stopLyric, pureMusicLyric } =
-  useLyric({
-    songReady,
-    currentTime,
-  })
+const {
+  currentLyric,
+  currentLineNum,
+  playLyric,
+  stopLyric,
+  pureMusicLyric,
+  playingLyric,
+} = useLyric({
+  songReady,
+  currentTime,
+})
 
 // 监听当前播放歌曲是否发生变化
 watch(currentSong, (newSong) => {
@@ -402,6 +411,18 @@ function end() {
             .playing {
               animation: rotate 20s linear infinite;
             }
+          }
+        }
+        .playing-lyric-wrapper {
+          width: 80%;
+          margin: 30px auto 0 auto;
+          overflow: hidden;
+          text-align: center;
+          .playing-lyric {
+            height: 20px;
+            line-height: 20px;
+            font-size: $font-size-medium;
+            color: $color-text-l;
           }
         }
       }
