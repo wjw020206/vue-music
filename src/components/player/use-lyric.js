@@ -24,6 +24,13 @@ export default function useLyric({ songReady, currentTime }) {
     // 判断歌曲是否合法
     if (!newSong.url || !newSong.id) return
 
+    // 切换歌曲后，先停止之前歌曲的歌词播放（如果之前有歌词在播放的话）
+    stopLyric()
+    // 清空之前歌曲的歌词对象
+    currentLyric.value = null
+    // 重置当前显示的歌词行号
+    currentLineNum.value = 0
+
     const lyric = await getLyric(newSong)
     // 添加歌词到歌曲对象中
     store.commit('addSongLyric', {
