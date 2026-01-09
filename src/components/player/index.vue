@@ -36,6 +36,10 @@
                 {{ line.txt }}
               </p>
             </div>
+            <!-- 纯音乐无歌词的提示 -->
+            <div class="pure-music" v-show="pureMusicLyric">
+              <p>{{ pureMusicLyric }}</p>
+            </div>
           </div>
         </Scroll>
       </div>
@@ -129,10 +133,11 @@ const store = useStore()
 const { modeIcon, changeMode, playMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls } = useCd()
-const { currentLyric, currentLineNum, playLyric, stopLyric } = useLyric({
-  songReady,
-  currentTime,
-})
+const { currentLyric, currentLineNum, playLyric, stopLyric, pureMusicLyric } =
+  useLyric({
+    songReady,
+    currentTime,
+  })
 
 // 监听当前播放歌曲是否发生变化
 watch(currentSong, (newSong) => {
@@ -418,6 +423,12 @@ function end() {
             &.current {
               color: $color-text;
             }
+          }
+          .pure-music {
+            padding-top: 50%;
+            line-height: 32px;
+            color: $color-text-l;
+            font-size: $font-size-medium;
           }
         }
       }

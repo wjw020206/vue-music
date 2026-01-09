@@ -14,6 +14,8 @@ export default function useLyric({ songReady, currentTime }) {
   const currentLyric = ref(null)
   /** 当前显示的歌词行号 */
   const currentLineNum = ref(0)
+  /** 纯音乐歌词 */
+  const pureMusicLyric = ref(0)
 
   const currentSong = computed(() => store.getters.currentSong)
 
@@ -44,9 +46,18 @@ export default function useLyric({ songReady, currentTime }) {
     // 创建歌词对象
     currentLyric.value = new Lyric(lyric, handleLyric)
 
-    // 判断歌曲是否准备好播放
-    if (songReady.value) {
-      playLyric()
+    // 是否有歌词
+    const hasLyric = currentLyric.value.lines.length
+
+    // 判断是否有歌词
+    if (hasLyric) {
+      // 判断歌曲是否准备好播放
+      if (songReady.value) {
+        playLyric()
+      }
+    } else {
+      // 去除纯音乐提示前面的 [00:00:00]
+      pureMusicLyric.value = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, '')
     }
   })
 
@@ -96,5 +107,6 @@ export default function useLyric({ songReady, currentTime }) {
     currentLineNum,
     playLyric,
     stopLyric,
+    pureMusicLyric,
   }
 }
