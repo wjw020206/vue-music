@@ -16,10 +16,26 @@ export default function useMiddleInteractive() {
 
   function onMiddleTouchStart(event) {
     touch.startX = event.touches[0].pageX
+    touch.startY = event.touches[0].pageY
+    // 定义手指移动的方向锁
+    touch.directionLocked = ''
   }
 
   function onMiddleTouchMove(event) {
     const deltaX = event.touches[0].pageX - touch.startX
+    const deltaY = event.touches[0].pageY - touch.startY
+
+    const absDeltaX = Math.abs(deltaX)
+    const absDeltaY = Math.abs(deltaY)
+
+    // 判断是否设置了方向锁
+    if (!touch.directionLocked) {
+      // 判断如果横向滚动的距离大于垂直滚动的距离，则设置对应方向的方向锁
+      touch.directionLocked = absDeltaX >= absDeltaY ? 'h' : 'v'
+    }
+
+    // 判断是否是纵向偏移
+    if (touch.directionLocked === 'v') return
 
     const left = currentView === 'cd' ? 0 : -window.innerWidth
     // 偏移距离在 -window.innerWidth ~ 0 范围之间
