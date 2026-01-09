@@ -12,9 +12,13 @@
           />
         </div>
       </div>
-      <div>
-        <h2 class="name">{{ currentSong.name }}</h2>
-        <p class="desc">{{ currentSong.singer }}</p>
+      <div class="slider-wrapper" ref="sliderWrapperRef">
+        <div class="slider-group">
+          <div class="slider-page" v-for="song in playList" :key="song.id">
+            <h2 class="name">{{ song.name }}</h2>
+            <p class="desc">{{ song.singer }}</p>
+          </div>
+        </div>
       </div>
       <div class="control">
         <!-- 播放暂停按钮 -->
@@ -31,6 +35,7 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 import useCd from './use-cd'
 import ProgressCircle from './progress-circle.vue'
+import useMiniSlider from './use-mini-slider'
 
 defineProps({
   progress: {
@@ -42,6 +47,7 @@ defineProps({
 
 const store = useStore()
 const { cdCls } = useCd()
+useMiniSlider()
 
 const currentSong = computed(() => store.getters.currentSong)
 const fullScreen = computed(() => store.state.fullScreen)
@@ -49,6 +55,7 @@ const playing = computed(() => store.state.playing)
 const miniPlayIcon = computed(() => {
   return playing.value ? 'icon-pause-mini' : 'icon-play-mini'
 })
+const playList = computed(() => store.state.playList)
 
 /** 显示全屏播放组件 */
 function showNormalPlayer() {
@@ -83,16 +90,35 @@ function showNormalPlayer() {
       }
     }
   }
-  .name {
-    margin-bottom: 2px;
-    @include no-wrap();
-    font-size: $font-size-medium;
-    color: $color-text;
-  }
-  .desc {
-    @include no-wrap();
-    font-size: $font-size-small;
-    color: $color-text-d;
+  .slider-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    line-height: 20px;
+    overflow: hidden;
+    .slider-group {
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      .slider-page {
+        display: inline-block;
+        width: 100%;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        .name {
+          margin-bottom: 2px;
+          @include no-wrap();
+          font-size: $font-size-medium;
+          color: $color-text;
+        }
+        .desc {
+          @include no-wrap();
+          font-size: $font-size-small;
+          color: $color-text-d;
+        }
+      }
+    }
   }
   .control {
     flex: 0 0 30px;
