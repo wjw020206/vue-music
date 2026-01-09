@@ -63,6 +63,7 @@
               :progress
               @progress-changing="onProgressChanging"
               @progress-changed="onProgressChanged"
+              ref="barRef"
             />
           </div>
           <span class="time time-r">{{
@@ -104,7 +105,7 @@
 </template>
 
 <script setup>
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import useMode from './use-mode'
 import useFavorite from './use-favorite'
@@ -121,6 +122,7 @@ import MiniPlayer from './mini-player.vue'
 let progressChanging = false
 
 const audioRef = useTemplateRef('audioRef')
+const barRef = useTemplateRef('barRef')
 
 /** 歌曲是否准备好播放 */
 const songReady = ref(false)
@@ -197,6 +199,15 @@ watch(playing, (newPlaying) => {
     audioEl.pause()
     // 暂停歌词
     stopLyric()
+  }
+})
+// 监听播放器全屏播放的变化
+watch(fullScreen, async (newFullScreen) => {
+  // 判断当前播放器是否为全屏
+  if (newFullScreen) {
+    await nextTick()
+    // 用于修复从迷你播放器切换到全屏播放器时播放进度显示的问题
+    barRef.value.setOffset(progress.value)
   }
 })
 

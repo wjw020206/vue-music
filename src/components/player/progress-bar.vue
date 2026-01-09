@@ -43,8 +43,7 @@ const offset = ref(0)
 watch(
   () => props.progress,
   (newProgress) => {
-    const barWidth = progressBar.value.clientWidth - progressBtnWidth
-    offset.value = barWidth * newProgress
+    setOffset(newProgress)
   },
 )
 
@@ -86,6 +85,15 @@ function onClick(event) {
   const progress = offsetWidth / barWidth
   emit('progress-changed', progress)
 }
+/** 设置偏移量 */
+function setOffset(progress) {
+  const barWidth = progressBar.value.clientWidth - progressBtnWidth
+  offset.value = barWidth * progress
+}
+
+defineExpose({
+  setOffset,
+})
 </script>
 
 <style lang="scss" scoped>
