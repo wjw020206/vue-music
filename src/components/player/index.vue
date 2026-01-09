@@ -1,5 +1,5 @@
 <template>
-  <div class="player">
+  <div class="player" v-show="playList.length">
     <div class="normal-player" v-show="fullScreen">
       <div class="background">
         <img :src="currentSong.pic" />
@@ -91,6 +91,7 @@
         </div>
       </div>
     </div>
+    <MiniPlayer />
     <audio
       ref="audioRef"
       @pause="pause"
@@ -114,6 +115,7 @@ import useCd from './use-cd'
 import useLyric from './use-lyric'
 import Scroll from '@/components/base/scroll/index.vue'
 import useMiddleInteractive from './use-middle-interactive'
+import MiniPlayer from './mini-player.vue'
 
 /** 进度条是否正在拖动的标志位 */
 let progressChanging = false
