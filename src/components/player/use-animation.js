@@ -4,8 +4,21 @@ import animations from 'create-keyframe-animation'
 export default function useAnimation() {
   const cdWrapperRef = useTemplateRef('cdWrapperRef')
 
+  /** 进入中的标志位 */
+  let entering = false
+  /** 离开中的标志位 */
+  let leaving = false
+
   /** 进入动画 */
   function enter(_, done) {
+    // 判断离开过渡动画没有完成时触发了进入动画
+    if (leaving) {
+      // 手动触发离开动画完成回调，清除离开动画的相关样式，终止正在进行的离开动画
+      afterLeave()
+    }
+
+    entering = true
+
     const { x, y, scale } = getPositionAndScale()
 
     const animation = {
@@ -22,7 +35,7 @@ export default function useAnimation() {
       name: 'move',
       animation,
       presets: {
-        duration: 600, // 动画时长
+        duration: 600, // 动画时长（毫秒）
         easing: 'cubic-bezier(0.45, 0, 0.55, 1)', // 缓动效果
       },
     })
@@ -33,6 +46,7 @@ export default function useAnimation() {
 
   /** 进入动画完成后 */
   function afterEnter() {
+    entering = false
     // 取消动画注册
     animations.unregisterAnimation('move')
     cdWrapperRef.value.style.animation = ''
@@ -40,6 +54,13 @@ export default function useAnimation() {
 
   /** 离开动画 */
   function leave(_, done) {
+    // 判断进入过渡动画没有完成时触发了离开动画
+    if (entering) {
+      // 手动触发进入动画完成回调，确保进入动画取消注册，终止正在进行的进入动画
+      afterEnter()
+    }
+
+    leaving = true
     const { x, y, scale } = getPositionAndScale()
 
     const cdWrapperEl = cdWrapperRef.value
@@ -56,6 +77,7 @@ export default function useAnimation() {
 
   /** 离开动画完成后 */
   function afterLeave() {
+    leaving = false
     const cdWrapperEl = cdWrapperRef.value
 
     cdWrapperEl.style.transition = ''
