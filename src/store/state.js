@@ -5,7 +5,7 @@ const state = {
   /** 原始顺序歌曲列表 */
   sequenceList: [],
   /** 播放列表 */
-  playList: [],
+  playlist: [],
   /** 是否正在播放 */
   playing: false,
   /** 播放模式（默认顺序播放） */

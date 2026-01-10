@@ -22,8 +22,8 @@ export default function useMiniSlider() {
   const store = useStore()
 
   const fullScreen = computed(() => store.state.fullScreen)
-  const playList = computed(() => store.state.playList)
-  const sliderShow = computed(() => !fullScreen.value && playList.value.length)
+  const playlist = computed(() => store.state.playlist)
+  const sliderShow = computed(() => !fullScreen.value && playlist.value.length)
   const currentIndex = computed(() => store.state.currentIndex)
 
   onMounted(() => {

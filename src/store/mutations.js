@@ -9,7 +9,7 @@ const mutations = {
   },
   /** 设置播放列表 */
   setPlayList(state, list) {
-    state.playList = list
+    state.playlist = list
   },
   /** 设置播放模式 */
   setPlayMode(state, mode) {

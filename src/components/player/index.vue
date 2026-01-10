@@ -1,5 +1,5 @@
 <template>
-  <div class="player" v-show="playList.length">
+  <div class="player" v-show="playlist.length">
     <Transition
       name="normal"
       @enter="enter"
@@ -149,7 +149,7 @@ const playIcon = computed(() => (playing.value ? 'icon-pause' : 'icon-play'))
 /** 当前播放歌曲的下标 */
 const currentIndex = computed(() => store.state.currentIndex)
 /** 播放列表 */
-const playList = computed(() => store.state.playList)
+const playlist = computed(() => store.state.playlist)
 /** 根据歌曲准备状态显示对应的按钮是否可用状态 */
 const disableCls = computed(() => (songReady.value ? '' : 'disable'))
 /** 当前歌曲播放的进度 */
@@ -238,7 +238,7 @@ function pause() {
 }
 /** 切换上一首歌曲 */
 function prev() {
-  const list = playList.value
+  const list = playlist.value
 
   // 判断播放列表是否为空以及判断当前歌曲是否已经准备好播放
   if (!songReady.value || !list.length) return
@@ -264,7 +264,7 @@ function prev() {
 }
 /** 切换下一首歌曲 */
 function next() {
-  const list = playList.value
+  const list = playlist.value
 
   // 判断播放列表是否为空以及判断当前歌曲是否已经准备好播放
   if (!songReady.value || !list.length) return

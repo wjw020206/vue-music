@@ -14,7 +14,7 @@
       </div>
       <div class="slider-wrapper" ref="sliderWrapperRef">
         <div class="slider-group">
-          <div class="slider-page" v-for="song in playList" :key="song.id">
+          <div class="slider-page" v-for="song in playlist" :key="song.id">
             <h2 class="name">{{ song.name }}</h2>
             <p class="desc">{{ song.singer }}</p>
           </div>
@@ -55,7 +55,7 @@ const playing = computed(() => store.state.playing)
 const miniPlayIcon = computed(() => {
   return playing.value ? 'icon-pause-mini' : 'icon-play-mini'
 })
-const playList = computed(() => store.state.playList)
+const playlist = computed(() => store.state.playlist)
 
 /** 显示全屏播放组件 */
 function showNormalPlayer() {

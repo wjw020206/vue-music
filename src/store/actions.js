@@ -44,7 +44,7 @@ export function changeMode({ commit, state, getters }, mode) {
   }
 
   // 找到播放列表切换后当前播放歌曲的新索引
-  const index = state.playList.findIndex((song) => song.id === currentId)
+  const index = state.playlist.findIndex((song) => song.id === currentId)
 
   // 设置当前播放歌曲的新索引
   commit('setCurrentIndex', index)
