@@ -20,6 +20,7 @@ module.exports = {
           'top-list',
           'search',
           'Loading',
+          'playlist',
         ],
       },
     ],
