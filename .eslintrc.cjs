@@ -21,6 +21,7 @@ module.exports = {
           'search',
           'Loading',
           'playlist',
+          'confirm',
         ],
       },
     ],

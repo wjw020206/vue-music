@@ -8,6 +8,9 @@
             <h1 class="title">
               <i class="icon" :class="modeIcon" @click="changeMode" />
               <span class="text">{{ modeText }}</span>
+              <span class="clear" @click="showConfirm">
+                <i class="icon-clear" />
+              </span>
             </h1>
           </div>
           <Scroll class="list-content" ref="scrollRef">
@@ -40,6 +43,12 @@
             <span>关闭</span>
           </div>
         </div>
+        <Confirm
+          text="是否清空播放列表？"
+          confirm-btn-text="清空"
+          ref="confirmRef"
+          @confirm="confirmClear"
+        />
       </div>
     </Transition>
   </Teleport>
@@ -47,6 +56,7 @@
 
 <script setup>
 import Scroll from '@/components/base/scroll/index.vue'
+import Confirm from '@/components/base/confirm/index.vue'
 import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import useMode from './use-mode'
@@ -54,6 +64,7 @@ import useFavorite from './use-favorite'
 
 const scrollRef = useTemplateRef('scrollRef')
 const listRef = useTemplateRef('listRef')
+const confirmRef = useTemplateRef('confirmRef')
 
 /** 播放列表的显示状态 */
 const visible = ref(false)
@@ -127,10 +138,24 @@ function removeSong(song) {
   removing.value = true
   store.dispatch('removeSong', song)
 
+  // 当播放列表中没有歌曲时隐藏
+  if (!playlist.value.length) {
+    hide()
+  }
+
   // 动画持续时间为 300ms，动画结束后调整状态
   setTimeout(() => {
     removing.value = false
   }, 300)
+}
+/** 显示清空确认弹窗 */
+function showConfirm() {
+  confirmRef.value.show()
+}
+/** 确认清空 */
+function confirmClear() {
+  store.dispatch('clearSongList')
+  hide()
 }
 
 defineExpose({
@@ -184,6 +209,13 @@ defineExpose({
           flex: 1;
           font-size: $font-size-medium;
           color: $color-text-l;
+        }
+        .clear {
+          @include extend-click();
+          .icon-clear {
+            font-size: $font-size-medium;
+            color: $color-text-d;
+          }
         }
       }
     }

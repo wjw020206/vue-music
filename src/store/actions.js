@@ -79,9 +79,23 @@ export function removeSong({ commit, state }, song) {
   commit('setSequenceList', sequenceList)
   commit('setPlaylist', playlist)
   commit('setCurrentIndex', currentIndex)
+
+  // 判断播放列表中是否还有歌曲
+  if (!playlist.length) {
+    commit('setPlayingState', false)
+  }
 }
 
 /** 从歌曲列表中找到对应歌曲的索引 */
 function findIndex(list, song) {
   return list.findIndex((item) => item.id === song.id)
+}
+
+/** 清空播放列表 */
+export function clearSongList({ commit }) {
+  commit('setSequenceList', [])
+  commit('setPlaylist', [])
+  commit('setCurrentIndex', 0)
+  // 如果有歌曲在播放则停止播放
+  commit('setPlayingState', false)
 }

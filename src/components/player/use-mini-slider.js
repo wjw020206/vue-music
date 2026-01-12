@@ -72,9 +72,9 @@ export default function useMiniSlider() {
     })
 
     // 监听 playlist 的变化
-    watch(playlist, async () => {
+    watch(playlist, async (newList) => {
       // 判断滑动组件初始化并且迷你播放器显示
-      if (sliderVal && sliderShow.value) {
+      if (sliderVal && sliderShow.value && newList.length) {
         await nextTick()
         sliderVal.refresh()
       }
