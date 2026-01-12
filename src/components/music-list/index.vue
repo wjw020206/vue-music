@@ -98,9 +98,15 @@ const bgImageStyle = computed(() => {
     transform: `scale(${scale}) translateZ(${translateZ}px)`,
   }
 })
-const scrollStyle = computed(() => ({
-  top: `${imageHeight.value}px`,
-}))
+const scrollStyle = computed(() => {
+  // 判断是否显示了迷你播放器
+  const bottom = playlist.value.length ? '60px' : '0'
+
+  return {
+    top: `${imageHeight.value}px`,
+    bottom,
+  }
+})
 const filterStyle = computed(() => {
   let blur = 0
   const scrollYVal = scrollY.value
@@ -131,6 +137,7 @@ const playBtnStyle = computed(() => {
     display,
   }
 })
+const playlist = computed(() => store.state.playlist)
 
 onMounted(() => {
   imageHeight.value = bgImage.value.clientHeight
