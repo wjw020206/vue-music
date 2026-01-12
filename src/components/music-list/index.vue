@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import Scroll from '@/components/base/scroll/index.vue'
+import Scroll from '@/components/wrap-scroll'
 import SongList from '@/components/base/song-list/index.vue'
 import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'

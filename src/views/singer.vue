@@ -12,7 +12,7 @@
 
 <script setup>
 import { SINGER_KEY } from '@/assets/js/constant'
-import IndexList from '@/components/base/index-list/index.vue'
+import IndexList from '@/components/index-list/index.vue'
 import { getSingerList } from '@/service/singer'
 import storage from 'good-storage'
 import { onMounted, ref } from 'vue'

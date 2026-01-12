@@ -35,7 +35,7 @@
 import { getRecommend } from '@/service/recommend'
 import { computed, onMounted, ref } from 'vue'
 import Slider from '@/components/base/slider/index.vue'
-import Scroll from '@/components/base/scroll/index.vue'
+import Scroll from '@/components/wrap-scroll'
 
 /** 轮播图数据 */
 const sliders = ref([])
