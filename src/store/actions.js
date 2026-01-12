@@ -61,6 +61,9 @@ export function removeSong({ commit, state }, song) {
   const sequenceIndex = findIndex(sequenceList, song)
   const playlistIndex = findIndex(playlist, song)
 
+  // 判断歌曲是否在播放列表中不存在，则不执行后续逻辑
+  if (sequenceIndex < 0 || playlistIndex < 0) return
+
   sequenceList.splice(sequenceIndex, 1)
   playlist.splice(playlistIndex, 1)
 

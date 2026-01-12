@@ -24,7 +24,13 @@
                 <span class="favorite" @click.stop="toggleFavorite(song)">
                   <i :class="getFavoriteIcon(song)" />
                 </span>
-                <span class="delete" @click.stop="removeSong(song)">
+                <span
+                  class="delete"
+                  @click.stop="removeSong(song)"
+                  :class="{
+                    disable: removing,
+                  }"
+                >
                   <i class="icon-delete" />
                 </span>
               </li>
@@ -51,6 +57,8 @@ const listRef = useTemplateRef('listRef')
 
 /** 播放列表的显示状态 */
 const visible = ref(false)
+/** 删除歌曲中 */
+const removing = ref(false)
 
 const store = useStore()
 const { modeIcon, changeMode, modeText } = useMode()
@@ -113,7 +121,16 @@ function selectItem(song) {
 }
 /** 从播放列表中移除歌曲 */
 function removeSong(song) {
+  // 判断是否正在删除歌曲
+  if (removing.value) return
+
+  removing.value = true
   store.dispatch('removeSong', song)
+
+  // 动画持续时间为 300ms，动画结束后调整状态
+  setTimeout(() => {
+    removing.value = false
+  }, 300)
 }
 
 defineExpose({
