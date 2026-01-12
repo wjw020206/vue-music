@@ -60,9 +60,9 @@ const playlist = computed(() => store.state.playlist)
 const sequenceList = computed(() => store.state.sequenceList)
 const currentSong = computed(() => store.getters.currentSong)
 
-watch(currentSong, async () => {
+watch(currentSong, async (newSong) => {
   // 判断播放列表是否显示
-  if (!visible.value) return
+  if (!visible.value || !newSong.id) return
 
   await nextTick()
   scrollToCurrent()
@@ -95,6 +95,8 @@ function scrollToCurrent() {
   const index = sequenceList.value.findIndex((song) => {
     return currentSong.value.id === song.id
   })
+
+  if (index === -1) return
 
   const target = listRef.value.$el.children[index]
   scrollRef.value.scroll.scrollToElement(target, 300)

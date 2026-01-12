@@ -52,7 +52,6 @@ export default function useMiniSlider() {
           // https://better-scroll.github.io/docs/zh-CN/plugins/slide.html#slidepagechanged
           sliderVal.on('slidePageChanged', ({ pageX }) => {
             store.commit('setCurrentIndex', pageX)
-            store.commit('setPlayingState', true)
           })
         } else {
           // 重新计算
@@ -69,6 +68,15 @@ export default function useMiniSlider() {
       // 判断 slider 实例是否存在并且 sliderShow 为 true
       if (sliderVal && sliderShow.value) {
         sliderVal.goToPage(newIndex, 0, 0)
+      }
+    })
+
+    // 监听 playlist 的变化
+    watch(playlist, async () => {
+      // 判断滑动组件初始化并且迷你播放器显示
+      if (sliderVal && sliderShow.value) {
+        await nextTick()
+        sliderVal.refresh()
       }
     })
   })

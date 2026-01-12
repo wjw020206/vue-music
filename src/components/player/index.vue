@@ -193,6 +193,8 @@ watch(currentSong, (newSong) => {
   audioEl.src = newSong.url
   // 播放
   audioEl.play()
+  // 设置播放状态为正在播放
+  store.commit('setPlayingState', true)
 })
 // 监听歌曲播放状态的变化
 watch(playing, (newPlaying) => {
@@ -255,11 +257,6 @@ function prev() {
     }
 
     store.commit('setCurrentIndex', index)
-
-    // 判断当前播放状态是否为暂停状态
-    if (!playing.value) {
-      store.commit('setPlayingState', true)
-    }
   }
 }
 /** 切换下一首歌曲 */
@@ -281,11 +278,6 @@ function next() {
     }
 
     store.commit('setCurrentIndex', index)
-
-    // 判断当前播放状态是否为暂停状态
-    if (!playing.value) {
-      store.commit('setPlayingState', true)
-    }
   }
 }
 /** 循环播放正在播放的歌曲 */
