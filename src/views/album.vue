@@ -1,24 +1,19 @@
 <template>
-  <div class="singer-detail">
+  <div class="album">
     <MusicList :songs :pic :title :loading />
   </div>
 </template>
 
 <script>
-import { getSingerDetail } from '@/service/singer'
-import MusicList from '@/components/music-list/index.vue'
-import { SINGER_KEY } from '@/assets/js/constant'
+import { ALBUM_KEY } from '@/assets/js/constant'
 import createDetailComponent from '@/assets/js/create-detail-component'
+import { getAlbum } from '@/service/recommend'
 
-export default createDetailComponent(
-  'SingerDetail',
-  SINGER_KEY,
-  getSingerDetail,
-)
+export default createDetailComponent('Album', ALBUM_KEY, getAlbum)
 </script>
 
 <style lang="scss" scoped>
-.singer-detail {
+.album {
   position: fixed;
   z-index: 10;
   top: 0;

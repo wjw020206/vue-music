@@ -22,6 +22,7 @@ module.exports = {
           'Loading',
           'playlist',
           'confirm',
+          'album',
         ],
       },
     ],

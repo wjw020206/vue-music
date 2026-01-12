@@ -4,7 +4,7 @@
     <!-- 在路由组件上实现过渡动画 -->
     <RouterView v-slot="{ Component }">
       <Transition appear name="slide">
-        <Component :is="Component" :singer="selectedSinger" />
+        <Component :is="Component" :data="selectedSinger" />
       </Transition>
     </RouterView>
   </div>
