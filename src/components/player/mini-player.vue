@@ -135,6 +135,12 @@ function showPlaylist() {
     flex: 0 0 30px;
     width: 30px;
     padding: 0 10px;
+    .icon-playlist {
+      position: relative;
+      top: -2px;
+      font-size: 28px;
+      color: $color-theme-d;
+    }
     .icon-mini {
       position: absolute;
       left: 0;
