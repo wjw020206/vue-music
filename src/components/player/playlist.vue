@@ -11,7 +11,7 @@
             </h1>
           </div>
           <Scroll class="list-content" ref="scrollRef">
-            <ul ref="listRef">
+            <TransitionGroup name="list" tag="ul" ref="listRef">
               <li
                 class="item"
                 v-for="song in sequenceList"
@@ -21,11 +21,14 @@
                 <i class="current" :class="getCurrentIcon(song)" />
                 <span class="text">{{ song.name }}</span>
                 <!-- 收藏按钮 -->
-                <span class="favorite">
-                  <i :class="getFavoriteIcon(song)" @click="toggleFavorite" />
+                <span class="favorite" @click.stop="toggleFavorite(song)">
+                  <i :class="getFavoriteIcon(song)" />
+                </span>
+                <span class="delete" @click.stop="removeSong(song)">
+                  <i class="icon-delete" />
                 </span>
               </li>
-            </ul>
+            </TransitionGroup>
           </Scroll>
           <div class="list-footer" @click.stop="hide">
             <span>关闭</span>
@@ -92,7 +95,8 @@ function scrollToCurrent() {
   const index = sequenceList.value.findIndex((song) => {
     return currentSong.value.id === song.id
   })
-  const target = listRef.value.children[index]
+
+  const target = listRef.value.$el.children[index]
   scrollRef.value.scroll.scrollToElement(target, 300)
 }
 /** 选择一首歌播放 */
@@ -104,6 +108,10 @@ function selectItem(song) {
   // 设置当前播放的歌曲下标并开始播放
   store.commit('setCurrentIndex', index)
   store.commit('setPlayingState', true)
+}
+/** 从播放列表中移除歌曲 */
+function removeSong(song) {
+  store.dispatch('removeSong', song)
 }
 
 defineExpose({
@@ -188,6 +196,14 @@ defineExpose({
           color: $color-theme;
           .icon-favorite {
             color: $color-sub-theme;
+          }
+        }
+        .delete {
+          @include extend-click();
+          font-size: $font-size-small;
+          color: $color-theme;
+          &.disable {
+            color: $color-theme-d;
           }
         }
       }
