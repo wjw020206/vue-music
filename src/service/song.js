@@ -13,7 +13,7 @@ export function processSongs(songs) {
         song.url = map[song.mid]
         return song
       })
-      .filter((song) => song.url.indexOf('vkey') > -1)
+      .filter((song) => song.url && song.url.indexOf('vkey') > -1)
   })
 }
 

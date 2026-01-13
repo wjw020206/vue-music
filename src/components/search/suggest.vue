@@ -1,5 +1,9 @@
 <template>
-  <div class="suggest" v-loading:[loadingText]="!singer && !songs.length">
+  <div
+    class="suggest"
+    v-loading:[loadingText]="loading"
+    v-no-result:[noResultText]="noResult"
+  >
     <ul class="suggest-list">
       <li class="suggest-item" v-if="singer">
         <div class="icon">
@@ -24,9 +28,10 @@
 <script setup>
 import { search } from '@/service/search'
 import { processSongs } from '@/service/song'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const loadingText = ''
+const noResultText = '抱歉，暂无搜索结果'
 
 const props = defineProps({
   /** 搜索关键词 */
@@ -46,6 +51,13 @@ const songs = ref([])
 const hasMore = ref(true)
 /** 分页页码 */
 const page = ref(1)
+
+/** 判断是否有无结果 */
+const noResult = computed(() => {
+  return !singer.value && !songs.value.length && !hasMore.value
+})
+/** 是否正在加载中 */
+const loading = computed(() => !singer.value && !songs.value.length)
 
 watch(
   () => props.query,
