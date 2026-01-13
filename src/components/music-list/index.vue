@@ -22,7 +22,7 @@
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
-        <SongList :songs="songs" @select="selectItem" />
+        <SongList :rank :songs="songs" @select="selectItem" />
       </div>
     </Scroll>
   </div>
@@ -54,6 +54,8 @@ const props = defineProps({
     type: String,
     default: '抱歉，没有找到可播放的歌曲',
   },
+  /** 是否显示排名 */
+  rank: Boolean,
 })
 
 const router = useRouter()
