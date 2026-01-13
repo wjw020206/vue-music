@@ -1,7 +1,7 @@
 <template>
   <div class="search-input">
     <i class="icon-search" />
-    <input class="input-inner" v-model="query" />
+    <input class="input-inner" v-model="query" :placeholder />
     <i class="icon-dismiss" v-show="query" @click="clear" />
   </div>
 </template>
@@ -13,6 +13,10 @@ import { debounce } from 'throttle-debounce'
 const props = defineProps({
   modelValue: {
     type: String,
+  },
+  placeholder: {
+    type: String,
+    default: '搜索歌曲、歌手',
   },
 })
 
