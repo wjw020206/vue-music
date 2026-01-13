@@ -23,6 +23,7 @@ module.exports = {
           'playlist',
           'confirm',
           'album',
+          'suggest',
         ],
       },
     ],
