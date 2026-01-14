@@ -35,6 +35,10 @@ const mutations = {
       }
     })
   },
+  /** 设置搜索历史记录 */
+  setSearchHistory(state, searches) {
+    state.searchHistory = searches
+  },
 }
 
 export default mutations

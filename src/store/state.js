@@ -1,5 +1,5 @@
 import { load } from '@/assets/js/array-store'
-import { FAVORITE_KEY, PLAY_MODE } from '@/assets/js/constant'
+import { FAVORITE_KEY, PLAY_MODE, SEARCH_KEY } from '@/assets/js/constant'
 
 const state = {
   /** 原始顺序歌曲列表 */
@@ -16,6 +16,8 @@ const state = {
   fullScreen: false,
   /** 收藏歌曲列表 */
   favoriteList: load(FAVORITE_KEY),
+  /** 搜索历史记录 */
+  searchHistory: load(SEARCH_KEY),
 }
 
 export default state
