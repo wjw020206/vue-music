@@ -30,7 +30,7 @@
 <script setup>
 import { search } from '@/service/search'
 import { processSongs } from '@/service/song'
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import usePullUpLoad from './use-pull-up-load'
 
 const loadingText = ''
@@ -76,7 +76,7 @@ watch(
   },
 )
 
-const { isPullUpLoad } = usePullUpLoad(searchMore)
+const { isPullUpLoad, scroll } = usePullUpLoad(searchMore)
 
 /** 首次搜索 */
 async function searchFirst() {
@@ -90,6 +90,9 @@ async function searchFirst() {
   songs.value = await processSongs(result.songs)
   singer.value = result.singer
   hasMore.value = result.hasMore
+
+  await nextTick()
+  await makeItScrollable()
 }
 /** 搜索分页下拉加载更多 */
 async function searchMore() {
@@ -100,6 +103,16 @@ async function searchMore() {
   const result = await search(props.query, page.value, props.showSinger)
   songs.value = songs.value.concat(await processSongs(result.songs))
   hasMore.value = result.hasMore
+
+  await nextTick()
+  await makeItScrollable()
+}
+/** 填充列表使得其可滚动 */
+async function makeItScrollable() {
+  // 判断数据列表是否不可滚动
+  if (scroll.value.maxScrollY >= -1) {
+    await searchMore()
+  }
 }
 </script>
 
