@@ -14,7 +14,12 @@
           <p class="text">{{ singer.name }}</p>
         </div>
       </li>
-      <li class="suggest-item" v-for="song in songs" :key="song.id">
+      <li
+        class="suggest-item"
+        v-for="song in songs"
+        :key="song.id"
+        @click="selectSong(song)"
+      >
         <div class="icon">
           <i class="icon-music" />
         </div>
@@ -45,6 +50,8 @@ const props = defineProps({
     default: true,
   },
 })
+
+const emit = defineEmits(['select-song'])
 
 /** 歌手信息 */
 const singer = ref(null)
@@ -123,6 +130,10 @@ async function makeItScrollable() {
     await searchMore()
     manualLoading.value = false
   }
+}
+/** 选择歌曲 */
+function selectSong(song) {
+  emit('select-song', song)
 }
 </script>
 

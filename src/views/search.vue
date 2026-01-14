@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="search-result" v-show="query">
-      <Suggest :query />
+      <Suggest :query @select-song="selectSong" />
     </div>
   </div>
 </template>
@@ -29,6 +29,9 @@ import SearchInput from '@/components/search/index.vue'
 import Suggest from '@/components/search/suggest.vue'
 import { onMounted, ref } from 'vue'
 import { getHotKeys } from '@/service/search'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 /** 搜索关键词 */
 const query = ref('')
@@ -42,6 +45,9 @@ onMounted(async () => {
 
 function addQuery(value) {
   query.value = value
+}
+function selectSong(song) {
+  store.dispatch('addSong', song)
 }
 </script>
 

@@ -99,3 +99,34 @@ export function clearSongList({ commit }) {
   // 如果有歌曲在播放则停止播放
   commit('setPlayingState', false)
 }
+
+/** 添加歌曲 */
+export function addSong({ commit, state }, song) {
+  const playlist = state.playlist.slice()
+  const sequenceList = state.sequenceList.slice()
+
+  let currentIndex = state.currentIndex
+
+  const playlistIndex = findIndex(playlist, song)
+  // 判断播放列表中是否已经有这首歌
+  if (playlistIndex > -1) {
+    currentIndex = playlistIndex
+  } else {
+    // 没有则添加歌曲进入播放列表末尾
+    playlist.push(song)
+    // 并设置当前播放歌曲索引为最后一个
+    currentIndex = playlist.length - 1
+  }
+
+  const sequenceIndex = findIndex(sequenceList, song)
+  // 判断歌曲列表中是否已经有这首歌
+  if (sequenceIndex === -1) {
+    sequenceList.push(song)
+  }
+
+  commit('setSequenceList', sequenceList)
+  commit('setPlaylist', playlist)
+  commit('setCurrentIndex', currentIndex)
+  commit('setPlayingState', true)
+  commit('setFullScreen', true)
+}
