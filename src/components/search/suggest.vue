@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="rootRef"
     class="suggest"
     v-loading:[loadingText]="loading"
     v-no-result:[noResultText]="noResult"
@@ -21,6 +22,7 @@
           <p class="text">{{ song.singer }}-{{ song.name }}</p>
         </div>
       </li>
+      <div class="suggest-item" v-loading:[loadingText]="pullUpLoading"></div>
     </ul>
   </div>
 </template>
@@ -29,6 +31,7 @@
 import { search } from '@/service/search'
 import { processSongs } from '@/service/song'
 import { computed, ref, watch } from 'vue'
+import usePullUpLoad from './use-pull-up-load'
 
 const loadingText = ''
 const noResultText = '抱歉，暂无搜索结果'
@@ -59,6 +62,11 @@ const noResult = computed(() => {
 /** 是否正在加载中 */
 const loading = computed(() => !singer.value && !songs.value.length)
 
+/** 是否正在下拉加载中 */
+const pullUpLoading = computed(() => {
+  return isPullUpLoad.value && hasMore.value
+})
+
 watch(
   () => props.query,
   async (newQuery) => {
@@ -67,6 +75,8 @@ watch(
     await searchFirst()
   },
 )
+
+const { isPullUpLoad } = usePullUpLoad(searchMore)
 
 /** 首次搜索 */
 async function searchFirst() {
@@ -79,6 +89,16 @@ async function searchFirst() {
   const result = await search(props.query, page.value, props.showSinger)
   songs.value = await processSongs(result.songs)
   singer.value = result.singer
+  hasMore.value = result.hasMore
+}
+/** 搜索分页下拉加载更多 */
+async function searchMore() {
+  // 判断是否还有更多数据
+  if (!hasMore.value) return
+
+  page.value++
+  const result = await search(props.query, page.value, props.showSinger)
+  songs.value = songs.value.concat(await processSongs(result.songs))
   hasMore.value = result.hasMore
 }
 </script>
