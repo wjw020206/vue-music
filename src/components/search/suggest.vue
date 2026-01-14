@@ -22,7 +22,7 @@
           <p class="text">{{ song.singer }}-{{ song.name }}</p>
         </div>
       </li>
-      <div class="suggest-item" v-loading:[loadingText]="pullUpLoading"></div>
+      <div class="suggest-item" v-loading:[loadingText]="pullUpLoading" />
     </ul>
   </div>
 </template>
@@ -54,6 +54,8 @@ const songs = ref([])
 const hasMore = ref(true)
 /** 分页页码 */
 const page = ref(1)
+/** 是否填充加载中 */
+const manualLoading = ref(false)
 
 /** 判断是否有无结果 */
 const noResult = computed(() => {
@@ -61,10 +63,13 @@ const noResult = computed(() => {
 })
 /** 是否正在加载中 */
 const loading = computed(() => !singer.value && !songs.value.length)
-
-/** 是否正在下拉加载中 */
+/** 是否正在上拉加载中 */
 const pullUpLoading = computed(() => {
   return isPullUpLoad.value && hasMore.value
+})
+/** 是否阻止上拉加载 */
+const preventPullUpLoad = computed(() => {
+  return manualLoading.value || loading.value
 })
 
 watch(
@@ -76,10 +81,13 @@ watch(
   },
 )
 
-const { isPullUpLoad, scroll } = usePullUpLoad(searchMore)
+const { isPullUpLoad, scroll } = usePullUpLoad(searchMore, preventPullUpLoad)
 
 /** 首次搜索 */
 async function searchFirst() {
+  // 判断搜索关键词是否为空
+  if (!props.query) return
+
   // 重置数据和分页
   page.value = 1
   songs.value = []
@@ -94,10 +102,10 @@ async function searchFirst() {
   await nextTick()
   await makeItScrollable()
 }
-/** 搜索分页下拉加载更多 */
+/** 搜索分页上拉加载更多 */
 async function searchMore() {
   // 判断是否还有更多数据
-  if (!hasMore.value) return
+  if (!hasMore.value || !props.query) return
 
   page.value++
   const result = await search(props.query, page.value, props.showSinger)
@@ -111,7 +119,9 @@ async function searchMore() {
 async function makeItScrollable() {
   // 判断数据列表是否不可滚动
   if (scroll.value.maxScrollY >= -1) {
+    manualLoading.value = true
     await searchMore()
+    manualLoading.value = false
   }
 }
 </script>

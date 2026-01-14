@@ -6,12 +6,12 @@ import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 BScroll.use(Pullup)
 BScroll.use(ObserveDOM)
 
-/** 下拉加载相关逻辑 */
-export default function usePullUpLoad(requestData) {
+/** 上拉加载相关逻辑 */
+export default function usePullUpLoad(requestData, preventPullUpLoad) {
   const rootRef = useTemplateRef('rootRef')
 
   const scroll = ref(null)
-  /** 是否正在下拉获取数据 */
+  /** 是否正在上拉获取数据 */
   const isPullUpLoad = ref(false)
 
   onMounted(() => {
@@ -23,8 +23,14 @@ export default function usePullUpLoad(requestData) {
 
     scrollVal.on('pullingUp', pullingUpHandler)
 
-    /** 下拉回调 */
+    /** 上拉回调 */
     async function pullingUpHandler() {
+      // 避免在页面加载时触发再次触发上拉加载
+      if (preventPullUpLoad.value) {
+        scrollVal.finishPullUp()
+        return
+      }
+
       isPullUpLoad.value = true
       await requestData()
       scrollVal.finishPullUp()
