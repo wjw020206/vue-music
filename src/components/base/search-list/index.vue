@@ -1,9 +1,14 @@
 <template>
   <div class="search-list">
     <TransitionGroup name="list" tag="ul">
-      <li v-for="item in searches" :key="item" class="search-item">
+      <li
+        v-for="item in searches"
+        :key="item"
+        class="search-item"
+        @click="selectItem(item)"
+      >
         <span class="text">{{ item }}</span>
-        <span class="icon">
+        <span class="icon" @click.stop="deleteItem(item)">
           <i class="icon-delete" />
         </span>
       </li>
@@ -19,6 +24,17 @@ defineProps({
     default: () => [],
   },
 })
+
+const emit = defineEmits(['select', 'delete'])
+
+/** 选择历史记录 */
+function selectItem(item) {
+  emit('select', item)
+}
+/** 删除历史记录 */
+function deleteItem(item) {
+  emit('delete', item)
+}
 </script>
 
 <style lang="scss" scoped>
