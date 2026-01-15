@@ -52,7 +52,7 @@ export function changeMode({ commit, state, getters }, mode) {
   commit('setPlayMode', mode)
 }
 
-/** 移除歌曲 */
+/** 从播放列表中移除歌曲 */
 export function removeSong({ commit, state }, song) {
   // 拷贝数组，避免直接修改 state 中的数据
   const sequenceList = state.sequenceList.slice()
@@ -100,7 +100,7 @@ export function clearSongList({ commit }) {
   commit('setPlayingState', false)
 }
 
-/** 添加歌曲 */
+/** 添加歌曲进播放列表中 */
 export function addSong({ commit, state }, song) {
   const playlist = state.playlist.slice()
   const sequenceList = state.sequenceList.slice()

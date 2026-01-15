@@ -14,20 +14,28 @@
         <div v-show="!query">
           <Switches :items="['最近播放', '搜索历史']" v-model="currentIndex" />
         </div>
-        <div class="list-wrapper">
+        <div class="list-wrapper" v-show="!query">
           <Scroll class="list-scroll" v-if="currentIndex === 0">
             <div class="list-inner">
-              <SongList :songs="playHistory" />
+              <SongList :songs="playHistory" @select="selectSongBySongList" />
             </div>
           </Scroll>
           <Scroll class="list-scroll" v-if="currentIndex === 1">
             <div class="list-inner">
-              <SearchList :searches="searchHistory" :show-delete="false" />
+              <SearchList
+                :searches="searchHistory"
+                :show-delete="false"
+                @select="addQuery"
+              />
             </div>
           </Scroll>
         </div>
         <div class="search-result" v-show="query">
-          <Suggest :query="query" :show-singer="false" />
+          <Suggest
+            :query
+            :show-singer="false"
+            @select-song="selectSongBySuggest"
+          />
         </div>
       </div>
     </Transition>
@@ -43,6 +51,7 @@ import SongList from '@/components/base/song-list/index.vue'
 import SearchList from '@/components/base/search-list/index.vue'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import useSearchHistory from '@/components/search/use-search-history'
 
 const store = useStore()
 
@@ -58,6 +67,8 @@ const searchHistory = computed(() => store.state.searchHistory)
 /** 播放历史记录 */
 const playHistory = computed(() => store.state.playHistory)
 
+const { saveSearch } = useSearchHistory()
+
 /** 显示 */
 function show() {
   visible.value = true
@@ -65,6 +76,23 @@ function show() {
 /** 隐藏 */
 function hide() {
   visible.value = false
+}
+/** 将搜索历史记录添加到输入框中 */
+function addQuery(value) {
+  query.value = value
+}
+/** 从播放历史中选择歌曲 */
+function selectSongBySongList({ song }) {
+  addSong(song)
+}
+/** 从搜索结果中选择歌曲 */
+function selectSongBySuggest(song) {
+  addSong(song)
+  saveSearch(query.value)
+}
+/** 添加歌曲进播放列表中 */
+function addSong(song) {
+  store.dispatch('addSong', song)
 }
 
 defineExpose({
