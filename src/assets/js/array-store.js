@@ -59,3 +59,8 @@ export function clear(key) {
   storage.remove(key)
   return []
 }
+
+/** 替换存储某个 key 下的所有数据 */
+export function saveAll(items, key) {
+  storage.set(key, items)
+}
