@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 const ERR_OK = 0
-const baseURL = '/'
+// 此处替换为实际的接口请求地址
+const baseURL =
+  process.env.NODE_ENV === 'production' ? 'http://127.0.0.1/' : '/'
 
 axios.defaults.baseURL = baseURL
 

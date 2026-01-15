@@ -25,4 +25,8 @@ module.exports = defineConfig({
       return middlewares
     },
   },
+  // 生产环境不生成 SourceMap
+  productionSourceMap: false,
+  // 根据实际部署域名的路径来配置
+  publicPath: process.env.NODE_ENV === 'production' ? '/music-next/' : '/',
 })

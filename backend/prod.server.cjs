@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const csrf = require('xsrf');
 const http = require('http');
 const serveStatic = require('serve-static');
-const registerRouter = require('./dist/custom-router.cjs');
+const registerRouter = require('./router.cjs');
 
 const port = 9000;
 
