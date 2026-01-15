@@ -37,6 +37,12 @@
             @select-song="selectSongBySuggest"
           />
         </div>
+        <Message ref="messageRef">
+          <div class="message-title">
+            <i class="icon-ok" />
+            <span class="text">1首歌已经添加到播放列表</span>
+          </div>
+        </Message>
       </div>
     </Transition>
   </Teleport>
@@ -49,6 +55,7 @@ import Switches from '@/components/base/switches/index.vue'
 import Scroll from '@/components/base/scroll/index.vue'
 import SongList from '@/components/base/song-list/index.vue'
 import SearchList from '@/components/base/search-list/index.vue'
+import Message from '@/components/base/message/index.vue'
 import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import useSearchHistory from '@/components/search/use-search-history'
@@ -63,6 +70,7 @@ const query = ref('')
 const currentIndex = ref(0)
 
 const scrollRef = useTemplateRef('scrollRef')
+const messageRef = useTemplateRef('messageRef')
 
 /** 搜索历史记录 */
 const searchHistory = computed(() => store.state.searchHistory)
@@ -103,9 +111,14 @@ function selectSongBySuggest(song) {
 /** 添加歌曲进播放列表中 */
 function addSong(song) {
   store.dispatch('addSong', song)
+  showMessage()
 }
 function refreshScroll() {
   scrollRef.value.scroll.refresh()
+}
+/** 显示消息组件 */
+function showMessage() {
+  messageRef.value.show()
 }
 
 defineExpose({
@@ -164,6 +177,20 @@ defineExpose({
     top: 124px;
     bottom: 0;
     width: 100%;
+  }
+}
+.message-title {
+  text-align: center;
+  padding: 18px 0;
+  font-size: 0;
+  .icon-ok {
+    font-size: $font-size-medium;
+    color: $color-theme;
+    margin-right: 4px;
+  }
+  .text {
+    font-size: $font-size-medium;
+    color: $color-text;
   }
 }
 </style>
