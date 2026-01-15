@@ -126,6 +126,7 @@ import Scroll from '@/components/base/scroll/index.vue'
 import useMiddleInteractive from './use-middle-interactive'
 import MiniPlayer from './mini-player.vue'
 import useAnimation from './use-animation'
+import usePlayHistory from './use-play-history'
 
 /** 进度条是否正在拖动的标志位 */
 let progressChanging = false
@@ -179,6 +180,7 @@ const {
   onMiddleTouchEnd,
 } = useMiddleInteractive()
 const { enter, afterEnter, leave, afterLeave } = useAnimation()
+const { savePlay } = usePlayHistory()
 
 // 监听当前播放歌曲是否发生变化
 watch(currentSong, (newSong) => {
@@ -296,6 +298,7 @@ function ready() {
 
   // 当歌曲准备好时，播放歌词
   playLyric()
+  savePlay(currentSong.value)
 }
 /** 当歌曲播放出错时的回调 */
 function error() {

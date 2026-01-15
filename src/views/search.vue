@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import SearchInput from '@/components/search/index.vue'
+import SearchInput from '@/components/search/search-input.vue'
 import Suggest from '@/components/search/suggest.vue'
 import SearchList from '@/components/base/search-list/index.vue'
 import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from 'vue'

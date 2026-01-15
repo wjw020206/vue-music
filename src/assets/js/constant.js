@@ -8,6 +8,8 @@ export const ALBUM_KEY = '__album__'
 export const TOP_KEY = '__top__'
 /** 搜索历史存储 key */
 export const SEARCH_KEY = '__search__'
+/** 播放历史存储 key */
+export const PLAY_KEY = '__play__'
 
 /** 播放模式 */
 export const PLAY_MODE = {

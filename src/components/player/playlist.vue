@@ -39,6 +39,12 @@
               </li>
             </TransitionGroup>
           </Scroll>
+          <div class="list-add">
+            <div class="add" @click="showAddSong">
+              <i class="icon-add" />
+              <span class="text">添加歌曲到队列</span>
+            </div>
+          </div>
           <div class="list-footer" @click.stop="hide">
             <span>关闭</span>
           </div>
@@ -49,6 +55,7 @@
           ref="confirmRef"
           @confirm="confirmClear"
         />
+        <AddSong ref="addSongRef" />
       </div>
     </Transition>
   </Teleport>
@@ -57,6 +64,7 @@
 <script setup>
 import Scroll from '@/components/base/scroll/index.vue'
 import Confirm from '@/components/base/confirm/index.vue'
+import AddSong from '@/components/add-song/index.vue'
 import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useStore } from 'vuex'
 import useMode from './use-mode'
@@ -65,6 +73,7 @@ import useFavorite from './use-favorite'
 const scrollRef = useTemplateRef('scrollRef')
 const listRef = useTemplateRef('listRef')
 const confirmRef = useTemplateRef('confirmRef')
+const addSongRef = useTemplateRef('addSongRef')
 
 /** 播放列表的显示状态 */
 const visible = ref(false)
@@ -156,6 +165,10 @@ function showConfirm() {
 function confirmClear() {
   store.dispatch('clearSongList')
   hide()
+}
+/** 显示添加歌曲到播放列表组件 */
+function showAddSong() {
+  addSongRef.value.show()
 }
 
 defineExpose({
@@ -256,6 +269,25 @@ defineExpose({
           &.disable {
             color: $color-theme-d;
           }
+        }
+      }
+    }
+    .list-add {
+      width: 140px;
+      margin: 20px auto 30px auto;
+      .add {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        border: 1px solid $color-text-l;
+        border-radius: 100px;
+        color: $color-text-l;
+        .icon-add {
+          margin-right: 5px;
+          font-size: $font-size-small-s;
+        }
+        .text {
+          font-size: $font-size-small;
         }
       }
     }
