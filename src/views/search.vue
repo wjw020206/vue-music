@@ -3,31 +3,33 @@
     <div class="search-input-wrapper">
       <SearchInput v-model="query" />
     </div>
-    <div class="search-content" v-show="!query">
-      <div class="hot-keys">
-        <h1 class="title">热门搜索</h1>
-        <ul>
-          <li
-            class="item"
-            v-for="item in hotKeys"
-            :key="item.id"
-            @click="addQuery(item.key)"
-          >
-            <span>{{ item.key }}</span>
-          </li>
-        </ul>
+    <Scroll ref="scrollRef" class="search-content" v-show="!query">
+      <div>
+        <div class="hot-keys">
+          <h1 class="title">热门搜索</h1>
+          <ul>
+            <li
+              class="item"
+              v-for="item in hotKeys"
+              :key="item.id"
+              @click="addQuery(item.key)"
+            >
+              <span>{{ item.key }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="search-history" v-show="searchHistory.length">
+          <h1 class="title">
+            <span class="text">搜索历史</span>
+          </h1>
+          <SearchList
+            :searches="searchHistory"
+            @select="addQuery"
+            @delete="deleteSearch"
+          />
+        </div>
       </div>
-      <div class="search-history" v-show="searchHistory.length">
-        <h1 class="title">
-          <span class="text">搜索历史</span>
-        </h1>
-        <SearchList
-          :searches="searchHistory"
-          @select="addQuery"
-          @delete="deleteSearch"
-        />
-      </div>
-    </div>
+    </Scroll>
     <div class="search-result" v-show="query">
       <Suggest :query @select-song="selectSong" @select-singer="selectSinger" />
     </div>
@@ -44,17 +46,20 @@
 import SearchInput from '@/components/search/index.vue'
 import Suggest from '@/components/search/suggest.vue'
 import SearchList from '@/components/base/search-list/index.vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { getHotKeys } from '@/service/search'
 import { useStore } from 'vuex'
 import storage from 'good-storage'
 import { SINGER_KEY } from '@/assets/js/constant'
 import { useRouter } from 'vue-router'
 import useSearchHistory from '@/components/search/use-search-history'
+import Scroll from '@/components/wrap-scroll'
 
 const store = useStore()
 const router = useRouter()
 const { saveSearch, deleteSearch } = useSearchHistory()
+
+const scrollRef = useTemplateRef('scrollRef')
 
 /** 搜索关键词 */
 const query = ref('')
@@ -71,6 +76,18 @@ onMounted(async () => {
   hotKeys.value = result.hotKeys
 })
 
+// 监听关键词变化
+watch(query, async (newQuery) => {
+  // 当关键词为空时，显示搜索结果列表，此时调用 Scroll 的 refresh 方法重新计算
+  if (!newQuery) {
+    await nextTick()
+    refreshScroll()
+  }
+})
+
+function refreshScroll() {
+  scrollRef.value.scroll.refresh()
+}
 function addQuery(value) {
   query.value = value
 }
