@@ -1,7 +1,14 @@
 <template>
   <Header />
   <Tab />
-  <RouterView :style="viewStyle" />
+  <RouterView :style="viewStyle"></RouterView>
+  <!-- https://router.vuejs.org/zh/guide/essentials/named-views.html -->
+  <!-- 命名视图 -->
+  <RouterView v-slot="{ Component }" name="user">
+    <Transition appear name="slide">
+      <Component :is="Component" :style="viewStyle" />
+    </Transition>
+  </RouterView>
   <Player />
 </template>
 
