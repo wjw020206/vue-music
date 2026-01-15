@@ -4,10 +4,15 @@ import storage from 'good-storage'
 function insertArray(array, value, compare, maxLength) {
   const index = array.findIndex(compare)
 
-  // 判断元素是否已经在数组中存在
-  if (index > -1) return
+  // 判断元素是否已经在数组中存在并且在第一位
+  if (index === 0) return
 
-  // 当元素在数组中不存在则首部插入进数组
+  // 判断元素是否已经在数组中存在，但不在第一位
+  if (index > 0) {
+    // 从原来的位置删除，后续在插入进数组的第一位
+    array.splice(index, 1)
+  }
+
   array.unshift(value)
 
   // 如果设置了最大长度限制并且数组个数超出最大长度限制
