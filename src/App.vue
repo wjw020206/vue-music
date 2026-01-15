@@ -1,12 +1,18 @@
 <template>
   <Header />
   <Tab />
-  <RouterView :style="viewStyle"></RouterView>
+  <RouterView v-slot="{ Component }">
+    <KeepAlive>
+      <Component :is="Component" :style="viewStyle" />
+    </KeepAlive>
+  </RouterView>
   <!-- https://router.vuejs.org/zh/guide/essentials/named-views.html -->
   <!-- 命名视图 -->
   <RouterView v-slot="{ Component }" name="user">
     <Transition appear name="slide">
-      <Component :is="Component" :style="viewStyle" />
+      <KeepAlive>
+        <Component :is="Component" :style="viewStyle" />
+      </KeepAlive>
     </Transition>
   </RouterView>
   <Player />

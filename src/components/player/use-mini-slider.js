@@ -3,6 +3,8 @@ import Slide from '@better-scroll/slide'
 import {
   computed,
   nextTick,
+  onActivated,
+  onDeactivated,
   onMounted,
   onUnmounted,
   ref,
@@ -85,6 +87,18 @@ export default function useMiniSlider() {
     if (slider.value) {
       slider.value.destroy()
     }
+  })
+
+  // 因为 KeepAlive 缓存
+  // 组件首次挂载并且每次从缓存中被重新插入时触发
+  onActivated(() => {
+    slider.value.enable()
+    slider.value.refresh()
+  })
+
+  // 从 DOM 上移除、进入缓存以及组件卸载时调用
+  onDeactivated(() => {
+    slider.value.disable()
   })
 
   return {
