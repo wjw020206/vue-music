@@ -21,7 +21,16 @@
         <div class="search-history" v-show="searchHistory.length">
           <h1 class="title">
             <span class="text">搜索历史</span>
+            <span class="clear" @click="showConfirm">
+              <i class="icon-clear" />
+            </span>
           </h1>
+          <Confirm
+            ref="confirmRef"
+            text="是否清空所有搜索历史"
+            confirm-btn-text="清空"
+            @confirm="clearSearch"
+          />
           <SearchList
             :searches="searchHistory"
             @select="addQuery"
@@ -54,12 +63,14 @@ import { SINGER_KEY } from '@/assets/js/constant'
 import { useRouter } from 'vue-router'
 import useSearchHistory from '@/components/search/use-search-history'
 import Scroll from '@/components/wrap-scroll'
+import Confirm from '@/components/base/confirm/index.vue'
 
 const store = useStore()
 const router = useRouter()
-const { saveSearch, deleteSearch } = useSearchHistory()
+const { saveSearch, deleteSearch, clearSearch } = useSearchHistory()
 
 const scrollRef = useTemplateRef('scrollRef')
+const confirmRef = useTemplateRef('confirmRef')
 
 /** 搜索关键词 */
 const query = ref('')
@@ -107,6 +118,10 @@ function selectSinger(singer) {
 function cacheSinger(singer) {
   storage.session.set(SINGER_KEY, singer)
 }
+/** 显示清空搜索历史确认弹窗 */
+function showConfirm() {
+  confirmRef.value.show()
+}
 </script>
 
 <style lang="scss" scoped>
@@ -151,6 +166,13 @@ function cacheSinger(singer) {
         color: $color-text-l;
         .text {
           flex: 1;
+        }
+        .clear {
+          @include extend-click();
+          .icon-clear {
+            font-size: $font-size-medium;
+            color: $color-text-d;
+          }
         }
       }
     }
